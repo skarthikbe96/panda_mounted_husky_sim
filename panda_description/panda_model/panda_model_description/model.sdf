@@ -606,7 +606,7 @@
           <spring_reference>0</spring_reference>
           <spring_stiffness>0</spring_stiffness>
           <damping>3.0</damping>
-          <friction>0.48</friction>
+          <friction>0.4</friction>
         </dynamics>
       </axis>
     </joint>
@@ -725,7 +725,7 @@
       <joint_name>panda_joint7</joint_name>
       <p_gain>120</p_gain><d_gain>12</d_gain><i_gain>0</i_gain>  <!-- no integral -->
       <i_min>-1</i_min><i_max>1</i_max>
-      <cmd_min>-30</cmd_min><cmd_max>30</cmd_max>                 <!-- more authority -->
+      <cmd_min>-80</cmd_min><cmd_max>80</cmd_max>                 <!-- more authority -->
       <topic>/model/panda/joint/panda_joint7/cmd_pos</topic>
     </plugin>
 
