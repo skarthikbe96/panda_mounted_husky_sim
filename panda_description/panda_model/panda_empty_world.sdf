@@ -4,8 +4,12 @@
     <gravity>0 0 -9.8</gravity>
     <physics type='ode'>
       <max_step_size>0.01</max_step_size>
+      <real_time_update_rate>1000</real_time_update_rate>
       <real_time_factor>1</real_time_factor>
       <max_contacts>10</max_contacts>
+      <solver>
+        <iters>400</iters>
+      </solver>
     </physics>
 
     <!-- <plugin name='ignition::gazebo::systems::Physics' filename='libignition-gazebo-physics-system.so'/>
@@ -18,6 +22,7 @@
     <plugin filename="libgz-sim-sensors-system.so"          name="gz::sim::systems::Sensors">
       <render_engine>ogre2</render_engine>
     </plugin>
+
     <!-- Optional, only if you really need the IMU system -->
     <plugin filename="libgz-sim-imu-system.so"              name="gz::sim::systems::Imu"/>
 

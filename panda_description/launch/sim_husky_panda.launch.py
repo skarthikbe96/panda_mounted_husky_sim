@@ -1,15 +1,18 @@
 from launch import LaunchDescription
 from launch.actions import SetEnvironmentVariable, ExecuteProcess
-from launch.substitutions import Command, PathJoinSubstitution
 from launch_ros.actions import Node
 from ament_index_python.packages import get_package_share_directory
 from launch_ros.parameter_descriptions import ParameterValue
 import os
+from launch.substitutions import Command, PathJoinSubstitution, FindExecutable
+from launch.actions import TimerAction
+
 
 def generate_launch_description():
     desc = get_package_share_directory('panda_description')
 
-    world_path   = PathJoinSubstitution([desc, 'panda_model', 'panda_empty_world.sdf'])
+    # world_path   = PathJoinSubstitution([desc, 'panda_model', 'panda_empty_world.sdf'])
+    world_path   = PathJoinSubstitution([desc, 'panda_model', 'husky_warehouse_world.sdf'])
     urdf_xacro   = PathJoinSubstitution([desc, 'panda_model', 'panda_mounted_husky', 'panda_mounted_husky.urdf.xacro'])
     bridge_yaml  = PathJoinSubstitution([desc, 'config', 'bridge_husky_panda.yaml'])   
     rviz_config  = PathJoinSubstitution([desc, 'panda_model', 'panda_rviz.rviz'])
@@ -21,8 +24,10 @@ def generate_launch_description():
     )
 
     # xacro -> robot_description for RViz/robot_state_publisher
-    robot_description = ParameterValue(Command(['xacro ', urdf_xacro]), value_type=str)
-
+    robot_description = ParameterValue(
+        Command([FindExecutable(name='xacro'), ' ', urdf_xacro]),
+        value_type=str
+    )
     gz = ExecuteProcess(
         cmd=['gz', 'sim', '-v', '3', world_path],
         output='screen'
@@ -59,7 +64,6 @@ def generate_launch_description():
     )
 
     # Your single Python relay that republishes /joint_states_cmd -> /model/panda/joint/*/cmd_pos
-    # (Make sure it’s installed either via ament_python entry_points or CMake install(PROGRAMS ...))
     js2gz = Node(
         package='panda_description',        # <-- this package
         executable='husky_panda_bridge.py',          # <-- the script’s console entry name
@@ -68,53 +72,30 @@ def generate_launch_description():
         parameters=[{'use_sim_time': True}]
     )
 
+    tf_base_husky_base  = Node(
+    package='tf2_ros', executable='static_transform_publisher',
+    name='tf_base_to_gz_base',
+    arguments=['0','0','0','0','0','0',
+               'base_link',
+               'panda_mounted_husky/husky/base_link'],
+    output='screen'
+    )
 
-    Node(
-        package='tf2_ros',
-        executable='static_transform_publisher',
-        name='static_tf_base_to_scoped_base',
-        arguments=[
-            '0','0','0','0','0','0',
-            'base_link',                               # parent in your TF tree
-            'panda_mounted_husky/husky/base_link'      # scoped parent from GZ
-        ],
+    tf_gz_base_planar = Node(
+        package='tf2_ros', executable='static_transform_publisher',
+        name='tf_gz_base_to_planar_laser',
+        arguments=['0','0','0','0','0','0',
+                'panda_mounted_husky/husky/base_link',
+                'panda_mounted_husky/husky/base_link/planar_laser'],
         output='screen'
     )
 
-    Node(
-        package='tf2_ros',
-        executable='static_transform_publisher',
-        name='static_tf_planar_lidar',
-        arguments=['0', '0', '0', '0', '0', '0', 'base_link', 'panda_mounted_husky::husky::base_link'],
-        output='screen'
-    ),
-
-    # Static transform: front_laser_link -> husky/base_link/front_laser
-    Node(
-        package='tf2_ros',
-        executable='static_transform_publisher',
-        name='static_tf_front_laser',
-        arguments=['0', '0', '0', '0', '0', '0', 'panda_mounted_husky::husky::base_link', 'panda_mounted_husky::husky::base_link::planar_laser'],
-        output='screen'
-    ),
-
-    Node(
-        package='tf2_ros',
-        executable='static_transform_publisher',
-        name='static_tf_front_laser',
-        arguments=['0', '0', '0', '0', '0', '0', 'panda_mounted_husky::husky::base_link', 'panda_mounted_husky/husky/base_link/planar_laser'],
-        output='screen'
-    ),
-
-    Node(
-        package='tf2_ros',
-        executable='static_transform_publisher',
-        name='static_tf_front_laser',
-        arguments=[
-            '0','0','0','0','0','0',
-            'panda_mounted_husky::husky::base_link',
-            'panda_mounted_husky::husky::base_link::front_laser'
-        ],
+    tf_gz_base_front_laser = Node(
+        package='tf2_ros', executable='static_transform_publisher',
+        name='tf_gz_base_to_front_laser',
+        arguments=['0','0','0','0','0','0',
+                'panda_mounted_husky/husky/base_link',
+                'panda_mounted_husky/husky/base_link/front_laser'],
         output='screen'
     )
 
@@ -132,8 +113,8 @@ def generate_launch_description():
         model_search,
         gz,
         bridge,
-        rsp,
-        jsp,
-        js2gz,
-        rviz,
+        TimerAction(period=0.5, actions=[
+            rsp, jsp, js2gz, rviz, tf_base_husky_base, tf_gz_base_planar, tf_gz_base_front_laser
+        ]),
+
     ])
