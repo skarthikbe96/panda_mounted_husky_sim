@@ -50,7 +50,9 @@ def generate_launch_description():
         parameters=[{'use_sim_time': True, 
                      'publish_frequency': 50.0,
                       'robot_description': robot_description}],
-        output='screen'
+        output='screen',
+        # remappings=[('joint_states', 'joint_states_cmd')] 
+
     )
 
     # Joint sliders -> /joint_states_cmd

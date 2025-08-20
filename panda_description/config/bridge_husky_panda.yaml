@@ -1,5 +1,7 @@
-# --- control_args -------------------------------------------------------------
-- ros_topic_name: "/clock"                # ← must be /clock
+# ros_gz_bridge parameter_bridge config (Jazzy / GZ Sim 8)
+
+# --- Core / clock, state, base control ---------------------------------------
+- ros_topic_name: "/clock"
   gz_topic_name: "/world/default/clock"
   ros_type_name: "rosgraph_msgs/msg/Clock"
   gz_type_name: "gz.msgs.Clock"
@@ -7,9 +9,6 @@
   lazy: false
 
 - ros_topic_name: "/joint_states"
-  # Pick the GZ topic that actually exists in your world.
-  # From your `gz topic -l`, the nested one is present:
-  # gz_topic_name: "/world/default/model/panda_mounted_husky/model/husky/joint_state"
   gz_topic_name: "/world/default/model/panda_mounted_husky/model/husky/joint_state"
   ros_type_name: "sensor_msgs/msg/JointState"
   gz_type_name: "gz.msgs.Model"
@@ -23,7 +22,6 @@
   direction: BIDIRECTIONAL
   lazy: true
 
-
 - ros_topic_name: "/cmd_vel"
   gz_topic_name: "/cmd_vel"
   ros_type_name: "geometry_msgs/msg/Twist"
@@ -31,65 +29,63 @@
   direction: BIDIRECTIONAL
   lazy: true
 
-
-# ---------- Panda: joint position controllers (ROS -> GZ) ----------
-# Panda joint position commands (ROS -> GZ)
+# --- Panda joint position commands (ROS -> GZ) --------------------------------
 - ros_topic_name: "/model/panda/joint/panda_joint1/cmd_pos"
-  gz_topic_name: "/model/panda/joint/panda_joint1/0/cmd_pos"
+  gz_topic_name: "/model/panda/joint/panda_joint1/cmd_pos"
   ros_type_name: "std_msgs/msg/Float64"
   gz_type_name: "gz.msgs.Double"
   direction: ROS_TO_GZ
   lazy: true
 - ros_topic_name: "/model/panda/joint/panda_joint2/cmd_pos"
-  gz_topic_name: "/model/panda/joint/panda_joint2/0/cmd_pos"
+  gz_topic_name: "/model/panda/joint/panda_joint2/cmd_pos"
   ros_type_name: "std_msgs/msg/Float64"
   gz_type_name: "gz.msgs.Double"
   direction: ROS_TO_GZ
   lazy: true
 - ros_topic_name: "/model/panda/joint/panda_joint3/cmd_pos"
-  gz_topic_name: "/model/panda/joint/panda_joint3/0/cmd_pos"
+  gz_topic_name: "/model/panda/joint/panda_joint3/cmd_pos"
   ros_type_name: "std_msgs/msg/Float64"
   gz_type_name: "gz.msgs.Double"
   direction: ROS_TO_GZ
   lazy: true
 - ros_topic_name: "/model/panda/joint/panda_joint4/cmd_pos"
-  gz_topic_name: "/model/panda/joint/panda_joint4/0/cmd_pos"
+  gz_topic_name: "/model/panda/joint/panda_joint4/cmd_pos"
   ros_type_name: "std_msgs/msg/Float64"
   gz_type_name: "gz.msgs.Double"
   direction: ROS_TO_GZ
   lazy: true
 - ros_topic_name: "/model/panda/joint/panda_joint5/cmd_pos"
-  gz_topic_name: "/model/panda/joint/panda_joint5/0/cmd_pos"
+  gz_topic_name: "/model/panda/joint/panda_joint5/cmd_pos"
   ros_type_name: "std_msgs/msg/Float64"
   gz_type_name: "gz.msgs.Double"
   direction: ROS_TO_GZ
   lazy: true
 - ros_topic_name: "/model/panda/joint/panda_joint6/cmd_pos"
-  gz_topic_name: "/model/panda/joint/panda_joint6/0/cmd_pos"
+  gz_topic_name: "/model/panda/joint/panda_joint6/cmd_pos"
   ros_type_name: "std_msgs/msg/Float64"
   gz_type_name: "gz.msgs.Double"
   direction: ROS_TO_GZ
   lazy: true
 - ros_topic_name: "/model/panda/joint/panda_joint7/cmd_pos"
-  gz_topic_name: "/model/panda/joint/panda_joint7/0/cmd_pos"
+  gz_topic_name: "/model/panda/joint/panda_joint7/cmd_pos"
   ros_type_name: "std_msgs/msg/Float64"
   gz_type_name: "gz.msgs.Double"
   direction: ROS_TO_GZ
   lazy: true
 - ros_topic_name: "/model/panda/joint/panda_finger_joint1/cmd_pos"
-  gz_topic_name: "/model/panda/joint/panda_finger_joint1/0/cmd_pos"
+  gz_topic_name: "/model/panda/joint/panda_finger_joint1/cmd_pos"
   ros_type_name: "std_msgs/msg/Float64"
   gz_type_name: "gz.msgs.Double"
   direction: ROS_TO_GZ
   lazy: true
 - ros_topic_name: "/model/panda/joint/panda_finger_joint2/cmd_pos"
-  gz_topic_name: "/model/panda/joint/panda_finger_joint2/0/cmd_pos"
+  gz_topic_name: "/model/panda/joint/panda_finger_joint2/cmd_pos"
   ros_type_name: "std_msgs/msg/Float64"
   gz_type_name: "gz.msgs.Double"
   direction: ROS_TO_GZ
   lazy: true
 
-# ---------- Panda wrist RGB-D (GZ -> ROS) ----------
+# --- Wrist RGBD (GZ -> ROS) ---------------------------------------------------
 - ros_topic_name: "/panda/wrist/rgbd/image"
   gz_topic_name: "/panda/wrist/rgbd/image"
   ros_type_name: "sensor_msgs/msg/Image"
@@ -115,117 +111,73 @@
   direction: GZ_TO_ROS
   lazy: true
 
-
-# --- sensor_args --------------------------------------------------------------
-- ros_topic_name: "/world/default/model/panda_mounted_husky/model/husky/link/base_link/sensor/camera_front/image"
-  gz_topic_name: "/world/default/model/panda_mounted_husky/model/husky/link/base_link/sensor/camera_front/image"
+# --- Husky sensors (use the short GZ topics you listed) -----------------------
+- ros_topic_name: "/camera_front/image"
+  gz_topic_name: "/camera_front/image"
   ros_type_name: "sensor_msgs/msg/Image"
   gz_type_name: "gz.msgs.Image"
   direction: GZ_TO_ROS
   lazy: true
-
-- ros_topic_name: "/world/default/model/panda_mounted_husky/model/husky/link/base_link/sensor/camera_front/camera_info"
-  gz_topic_name: "/world/default/model/panda_mounted_husky/model/husky/link/base_link/sensor/camera_front/camera_info"
+- ros_topic_name: "/camera_front/camera_info"
+  gz_topic_name: "/camera_front/camera_info"
   ros_type_name: "sensor_msgs/msg/CameraInfo"
   gz_type_name: "gz.msgs.CameraInfo"
   direction: GZ_TO_ROS
   lazy: true
-
-- ros_topic_name: "/world/default/model/panda_mounted_husky/model/husky/link/base_link/sensor/camera_front/depth_image"
-  gz_topic_name: "/world/default/model/panda_mounted_husky/model/husky/link/base_link/sensor/camera_front/depth_image"
+- ros_topic_name: "/camera_front/depth_image"
+  gz_topic_name: "/camera_front/depth_image"
   ros_type_name: "sensor_msgs/msg/Image"
   gz_type_name: "gz.msgs.Image"
   direction: GZ_TO_ROS
   lazy: true
-
-- ros_topic_name: "/world/default/model/panda_mounted_husky/model/husky/link/base_link/sensor/camera_front/points"
-  gz_topic_name: "/world/default/model/panda_mounted_husky/model/husky/link/base_link/sensor/camera_front/points"
+- ros_topic_name: "/camera_front/points"
+  gz_topic_name: "/camera_front/points"
   ros_type_name: "sensor_msgs/msg/PointCloud2"
   gz_type_name: "gz.msgs.PointCloudPacked"
   direction: GZ_TO_ROS
   lazy: true
 
-- ros_topic_name: "/world/default/model/panda_mounted_husky/model/husky/link/base_link/sensor/camera_down/image"
-  gz_topic_name: "/world/default/model/panda_mounted_husky/model/husky/link/base_link/sensor/camera_down/image"
+- ros_topic_name: "/camera_down/image"
+  gz_topic_name: "/camera_down/image"
   ros_type_name: "sensor_msgs/msg/Image"
   gz_type_name: "gz.msgs.Image"
   direction: GZ_TO_ROS
   lazy: true
-
-- ros_topic_name: "/world/default/model/panda_mounted_husky/model/husky/link/base_link/sensor/camera_down/camera_info"
-  gz_topic_name: "/world/default/model/panda_mounted_husky/model/husky/link/base_link/sensor/camera_down/camera_info"
+- ros_topic_name: "/camera_down/camera_info"
+  gz_topic_name: "/camera_down/camera_info"
   ros_type_name: "sensor_msgs/msg/CameraInfo"
   gz_type_name: "gz.msgs.CameraInfo"
   direction: GZ_TO_ROS
   lazy: true
-
-- ros_topic_name: "/world/default/model/panda_mounted_husky/model/husky/link/base_link/sensor/camera_down/depth_image"
-  gz_topic_name: "/world/default/model/panda_mounted_husky/model/husky/link/base_link/sensor/camera_down/depth_image"
+- ros_topic_name: "/camera_down/depth_image"
+  gz_topic_name: "/camera_down/depth_image"
   ros_type_name: "sensor_msgs/msg/Image"
   gz_type_name: "gz.msgs.Image"
   direction: GZ_TO_ROS
   lazy: true
-
-- ros_topic_name: "/world/default/model/panda_mounted_husky/model/husky/link/base_link/sensor/camera_down/points"
-  gz_topic_name: "/world/default/model/panda_mounted_husky/model/husky/link/base_link/sensor/camera_down/points"
+- ros_topic_name: "/camera_down/points"
+  gz_topic_name: "/camera_down/points"
   ros_type_name: "sensor_msgs/msg/PointCloud2"
   gz_type_name: "gz.msgs.PointCloudPacked"
   direction: GZ_TO_ROS
   lazy: true
 
-- ros_topic_name: "/world/default/model/panda_mounted_husky/model/husky/link/tilt_gimbal_link/sensor/camera_pan_tilt/image"
-  gz_topic_name: "/world/default/model/panda_mounted_husky/model/husky/link/tilt_gimbal_link/sensor/camera_pan_tilt/image"
-  ros_type_name: "sensor_msgs/msg/Image"
-  gz_type_name: "gz.msgs.Image"
-  direction: GZ_TO_ROS
-  lazy: true
-
-- ros_topic_name: "/world/default/model/panda_mounted_husky/model/husky/link/tilt_gimbal_link/sensor/camera_pan_tilt/camera_info"
-  gz_topic_name: "/world/default/model/panda_mounted_husky/model/husky/link/tilt_gimbal_link/sensor/camera_pan_tilt/camera_info"
-  ros_type_name: "sensor_msgs/msg/CameraInfo"
-  gz_type_name: "gz.msgs.CameraInfo"
-  direction: GZ_TO_ROS
-  lazy: true
-
-- ros_topic_name: "/world/default/model/panda_mounted_husky/model/husky/link/tilt_gimbal_link/sensor/camera_pan_tilt/depth_image"
-  gz_topic_name: "/world/default/model/panda_mounted_husky/model/husky/link/tilt_gimbal_link/sensor/camera_pan_tilt/depth_image"
-  ros_type_name: "sensor_msgs/msg/Image"
-  gz_type_name: "gz.msgs.Image"
-  direction: GZ_TO_ROS
-  lazy: true
-
-- ros_topic_name: "/world/default/model/panda_mounted_husky/model/husky/link/tilt_gimbal_link/sensor/camera_pan_tilt/points"
-  gz_topic_name: "/world/default/model/panda_mounted_husky/model/husky/link/tilt_gimbal_link/sensor/camera_pan_tilt/points"
-  ros_type_name: "sensor_msgs/msg/PointCloud2"
-  gz_type_name: "gz.msgs.PointCloudPacked"
-  direction: GZ_TO_ROS
-  lazy: true
-
-- ros_topic_name: "/world/default/model/panda_mounted_husky/model/husky/link/base_link/sensor/planar_laser/scan"
-  gz_topic_name: "/world/default/model/panda_mounted_husky/model/husky/link/base_link/sensor/planar_laser/scan"
+- ros_topic_name: "/planar_laser/scan"
+  gz_topic_name: "/planar_laser"
   ros_type_name: "sensor_msgs/msg/LaserScan"
   gz_type_name: "gz.msgs.LaserScan"
   direction: GZ_TO_ROS
   lazy: true
-
-- ros_topic_name: "/world/default/model/panda_mounted_husky/model/husky/link/base_link/sensor/front_laser/scan"
-  gz_topic_name: "/world/default/model/panda_mounted_husky/model/husky/link/base_link/sensor/front_laser/scan"
+- ros_topic_name: "/front_laser/scan"
+  gz_topic_name: "/front_laser"
   ros_type_name: "sensor_msgs/msg/LaserScan"
   gz_type_name: "gz.msgs.LaserScan"
-  direction: GZ_TO_ROS
-  lazy: true
-
-- ros_topic_name: "/world/default/model/panda_mounted_husky/model/husky/link/base_link/sensor/front_laser/scan/points"
-  gz_topic_name: "/world/default/model/panda_mounted_husky/model/husky/link/base_link/sensor/front_laser/scan/points"
-  ros_type_name: "sensor_msgs/msg/PointCloud2"
-  gz_type_name: "gz.msgs.PointCloudPacked"
   direction: GZ_TO_ROS
   lazy: true
 
 - ros_topic_name: "/imu_sensor/imu"
-  gz_topic_name: "/imu_sensor/imu"
+  gz_topic_name: "/imu_sensor"
   ros_type_name: "sensor_msgs/msg/Imu"
   gz_type_name: "gz.msgs.IMU"
   direction: GZ_TO_ROS
   lazy: true
-

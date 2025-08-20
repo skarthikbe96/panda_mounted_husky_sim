@@ -3,14 +3,16 @@
   <model name="panda_mounted_husky">
     <!-- Husky base -->
     <include>
-      <uri>file:///home/rebellion/mobile_robotics/gz_start/robot_models/panda_arm_model/panda_mounted_husky/husky_robot_description</uri>
+      <uri>file:///home/rebellion/mobile_robotics/gz_start/robot_models/panda_arm_model/colcon_ws/src/panda_description/panda_model/panda_mounted_husky/husky_robot_description</uri>
+      <!-- <uri>model://husky_robot_description</uri> -->
       <name>husky</name>
       <pose>0 0 0 0 0 0</pose>
     </include>
 
     <!-- Panda arm placed on the top plate (z = 0.2325 in husky::base_link frame) -->
     <include>
-      <uri>file:///home/rebellion/mobile_robotics/gz_start/robot_models/panda_arm_model/panda_mounted_husky/panda_arm_description</uri>
+      <uri>file:///home/rebellion/mobile_robotics/gz_start/robot_models/panda_arm_model/colcon_ws/src/panda_description/panda_model/panda_mounted_husky/panda_model_description</uri>
+      <!-- <uri>model://panda_model_description</uri> -->
       <name>panda</name>
       <pose>0 0 0.2325 0 0 0</pose>  <!-- adjust yaw here if needed -->
     </include>

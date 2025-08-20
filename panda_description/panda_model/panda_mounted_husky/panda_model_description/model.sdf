@@ -5,7 +5,7 @@
     <!-- <static>true</static> -->
     <!-- Arm Links -->
     <link name="panda_link0">
-      <gravity>0</gravity>
+      <!-- <gravity>0</gravity> -->
       <visual name="panda_link0_visual">
         <geometry>
           <mesh>
@@ -723,7 +723,7 @@
     <plugin filename="libgz-sim-joint-position-controller-system.so"
             name="gz::sim::systems::JointPositionController">
       <joint_name>panda_joint7</joint_name>
-      <p_gain>80</p_gain><d_gain>0.1</d_gain><i_gain>0</i_gain>  <!-- no integral -->
+      <p_gain>80</p_gain><d_gain>8</d_gain><i_gain>0</i_gain>  <!-- no integral -->
       <i_min>-1</i_min><i_max>1</i_max>
       <cmd_min>-12</cmd_min><cmd_max>12</cmd_max>                 <!-- more authority -->
       <topic>/model/panda/joint/panda_joint7/cmd_pos</topic>
