@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+<robot name="panda_mounted_husky" xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+  <!-- Tune the mount offset as you like -->
+  <!-- <xacro:arg name="mount_xyz" default="0 0 0.2325"/>
+  <xacro:arg name="mount_rpy" default="0 0 0"/> -->
+
+  <!-- Include macros (use RELATIVE paths so xacro doesn't need find-pkg-share) -->
+  <xacro:include filename="husky_robot_description/husky.urdf.xacro"/>
+  <xacro:include filename="panda_model_description/panda.urdf.xacro"/>
+
+  <!-- Instantiate Husky and Panda for RViz.
+       Keep Panda joint names EXACTLY as 'panda_joint{1..7}', etc.
+       (Your sliders & husky_panda_bridge depend on those names.) -->
+  <xacro:husky/>        <!-- leaves base link as 'base_link' -->
+  <xacro:panda/>        <!-- keeps joints 'panda_joint1'.. etc. -->
+
+  <!-- ONE rigid joint between them so URDF is a single tree -->
+  <joint name="husky_to_panda" type="fixed">
+    <parent link="base_link"/>         <!-- Husky base -->
+    <child  link="panda_link0"/>       <!-- Panda base link -->
+    <origin xyz="0 0 0.2325" rpy="0 0 0"/>
+  </joint>
+</robot>
+

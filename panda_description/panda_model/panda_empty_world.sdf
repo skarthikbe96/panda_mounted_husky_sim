@@ -12,12 +12,14 @@
     <plugin name='ignition::gazebo::systems::UserCommands' filename='libignition-gazebo-user-commands-system.so'/>
     <plugin name='ignition::gazebo::systems::SceneBroadcaster' filename='libignition-gazebo-scene-broadcaster-system.so'/>
     <plugin name='ignition::gazebo::systems::Sensors' filename='libignition-gazebo-sensors-system.so'> -->
-    <plugin filename="gz-sim-physics-system" name="gz::sim::systems::Physics"/>
-    <plugin filename="gz-sim-user-commands-system" name="gz::sim::systems::UserCommands"/>
-    <plugin filename="gz-sim-scene-broadcaster-system" name="gz::sim::systems::SceneBroadcaster"/>
-    <plugin filename="gz-sim-sensors-system" name="gz::sim::systems::Sensors">
+    <plugin filename="libgz-sim-physics-system.so"          name="gz::sim::systems::Physics"/>
+    <plugin filename="libgz-sim-user-commands-system.so"    name="gz::sim::systems::UserCommands"/>
+    <plugin filename="libgz-sim-scene-broadcaster-system.so" name="gz::sim::systems::SceneBroadcaster"/>
+    <plugin filename="libgz-sim-sensors-system.so"          name="gz::sim::systems::Sensors">
       <render_engine>ogre2</render_engine>
     </plugin>
+    <!-- Optional, only if you really need the IMU system -->
+    <plugin filename="libgz-sim-imu-system.so"              name="gz::sim::systems::Imu"/>
 
     <!-- Enable IMU data publication -->
     <plugin filename="gz-sim-imu-system"
@@ -48,15 +50,10 @@
 
 
     <include>
-      <uri>model://panda_model_description</uri>
+      <uri>model://panda_mounted_husky</uri>
       <name>panda_mounted_husky</name>
-      <pose>0 0 0.20 0 0 0</pose>
+      <pose>0 0 0 0 0 0</pose>
     </include>
-    
-    <joint name="fix_panda_to_world" type="fixed">
-      <parent>world</parent>
-      <child>panda_mounted_husky::panda_link0</child>
-    </joint>
 
     <!-- Static Cube Obstacle -->
     <model name="obstacle_cube">

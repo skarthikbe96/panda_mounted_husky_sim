@@ -5,10 +5,15 @@ find_package(ament_cmake REQUIRED)
 
 # Install resources
 
-install(PROGRAMS scripts/js_to_gz_cmd.py
-  DESTINATION lib/${PROJECT_NAME})
+# install(PROGRAMS scripts/js_to_gz_cmd.py
+#   DESTINATION lib/${PROJECT_NAME})
 
-install(DIRECTORY launch config worlds
+install(PROGRAMS
+  scripts/husky_panda_bridge.py
+  DESTINATION lib/${PROJECT_NAME}
+)
+
+install(DIRECTORY launch config worlds scripts
   DESTINATION share/${PROJECT_NAME}
 )
 
