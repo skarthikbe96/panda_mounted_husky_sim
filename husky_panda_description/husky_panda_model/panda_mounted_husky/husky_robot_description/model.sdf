@@ -163,7 +163,7 @@
           </mesh>
         </geometry>
       </visual>
-      <visual name="base_link_fixed_joint_lump__front_bumper_link_visual_3">
+      <!-- <visual name="base_link_fixed_joint_lump__front_bumper_link_visual_3">
         <pose frame="">0.48 0 0.091 0 -0 0</pose>
         <geometry>
           <mesh>
@@ -171,8 +171,8 @@
             <uri>meshes/bumper.dae</uri>
           </mesh>
         </geometry>
-      </visual>
-      <visual name="base_link_fixed_joint_lump__rear_bumper_link_visual_4">
+      </visual> -->
+      <!-- <visual name="base_link_fixed_joint_lump__rear_bumper_link_visual_4">
         <pose frame="">-0.48 0 0.091 0 -0 3.14159</pose>
         <geometry>
           <mesh>
@@ -180,7 +180,7 @@
             <uri>meshes/bumper.dae</uri>
           </mesh>
         </geometry>
-      </visual>
+      </visual> -->
       <visual name="base_link_fixed_joint_lump__top_chassis_link_visual_5">
         <pose frame="">0 0 0 0 -0 0</pose>
         <geometry>
@@ -232,7 +232,9 @@
       </visual>
       <!-- 2D planar lidar at bottom of sensor suite -->
       <visual name="base_link_fixed_joint_lump__planar_lidar_link_visual_14">
-        <pose frame="">0.474 0 0.127 0 -0 0</pose>
+        <!-- <pose frame="">0.474 0 0.127 0 -0 0</pose> -->
+          <!-- was: 0.474 0 0.127 0 0 0 -->
+        <pose>0.474 0 0.127 0 0 0</pose>
         <geometry>
           <cylinder>
               <radius>0.045</radius>
@@ -379,7 +381,9 @@
       <!-- Based on RPLidar S1 -->
       <sensor name="planar_laser" type="gpu_ray">
         <topic>/planar_laser</topic>
-          <pose>0.474 0 0.127 0 -0 0</pose>
+          <!-- <pose>0.474 0 0.127 0 -0 0</pose> -->
+            <!-- was: 0.474 0 0.127 0 0 0 -->
+          <pose>0.474 0 0.127 0 0 0</pose>
           <update_rate>10</update_rate>
           <lidar>
               <scan>
@@ -391,7 +395,7 @@
                   </horizontal>
               </scan>
               <range>
-                  <min>0.20</min>
+                  <min>0.60</min>
                   <max>25.0</max>
                   <resolution>0.01</resolution>
               </range>

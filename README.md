@@ -15,3 +15,7 @@ ros2 run xacro xacro panda_mounted_husky.urdf.xacro -o panda_mount_husky.urdf
 ros2 service call /slam_toolbox/serialize_map slam_toolbox/srv/SerializePoseGraph \
 "{filename: '/home/rebellion/mobile_robotics/gz_start/robot_models/panda_arm_model/colcon_ws/src/husky_nav2_slam/map'}"
 
+ros2 launch nav2_bringup navigation_launch.py use_sim_time:=true
+
+
+ros2 launch slam_toolbox online_async_launch.py   slam_params_file:=/home/rebellion/mobile_robotics/gz_start/robot_models/panda_arm_model/colcon_ws/src/husky_nav2_slam/config/slamtoolbox_params_online_async.yaml use_sim_time:=true

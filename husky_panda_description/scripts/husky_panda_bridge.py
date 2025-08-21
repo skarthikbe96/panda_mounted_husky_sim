@@ -35,25 +35,25 @@ class HuskyPandaBridge(Node):
         super().__init__('husky_panda_bridge')
 
         # --------------- TF: odom -> base_link from Gazebo odom ---------------
-        self.declare_parameters('', [
-            ('odom_topic', '/odom'),
-            ('odom_frame', 'odom'),
-            ('base_frame', 'base_link'),
-        ])
-        self.tf_broadcaster = TransformBroadcaster(self)
-        odom_topic = self.get_parameter('odom_topic').value
-        self.create_subscription(
-            Odometry,
-            odom_topic,
-            self.on_odom,
-            qos_profile=QoSProfile(
-                reliability=ReliabilityPolicy.RELIABLE,
-                durability=DurabilityPolicy.VOLATILE,
-                history=HistoryPolicy.KEEP_LAST,
-                depth=10,
-            )
-        )
-        self.get_logger().info(" processor + odom->tf is up.")
+        # self.declare_parameters('', [
+        #     ('odom_topic', '/odom'),
+        #     ('odom_frame', 'odom'),
+        #     ('base_frame', 'base_link'),
+        # ])
+        # self.tf_broadcaster = TransformBroadcaster(self)
+        # odom_topic = self.get_parameter('odom_topic').value
+        # self.create_subscription(
+        #     Odometry,
+        #     odom_topic,
+        #     self.on_odom,
+        #     qos_profile=QoSProfile(
+        #         reliability=ReliabilityPolicy.RELIABLE,
+        #         durability=DurabilityPolicy.VOLATILE,
+        #         history=HistoryPolicy.KEEP_LAST,
+        #         depth=10,
+        #     )
+        # )
+        # self.get_logger().info(" processor + odom->tf is up.")
 
         # --------------- Panda command pubs to Gazebo ---------------
         prefix = '/model/panda/joint'
@@ -84,16 +84,16 @@ class HuskyPandaBridge(Node):
 
 
     # ----- callbacks -----
-    def on_odom(self, msg: Odometry):
-        t = TransformStamped()
-        t.header.stamp = msg.header.stamp
-        t.header.frame_id = self.get_parameter('odom_frame').value
-        t.child_frame_id  = self.get_parameter('base_frame').value
-        t.transform.translation.x = msg.pose.pose.position.x
-        t.transform.translation.y = msg.pose.pose.position.y
-        t.transform.translation.z = msg.pose.pose.position.z
-        t.transform.rotation = msg.pose.pose.orientation
-        self.tf_broadcaster.sendTransform(t) 
+    # def on_odom(self, msg: Odometry):
+    #     t = TransformStamped()
+    #     t.header.stamp = msg.header.stamp
+    #     t.header.frame_id = self.get_parameter('odom_frame').value
+    #     t.child_frame_id  = self.get_parameter('base_frame').value
+    #     t.transform.translation.x = msg.pose.pose.position.x
+    #     t.transform.translation.y = msg.pose.pose.position.y
+    #     t.transform.translation.z = msg.pose.pose.position.z
+    #     t.transform.rotation = msg.pose.pose.orientation
+        # self.tf_broadcaster.sendTransform(t) 
 
     def on_gui_js(self, msg: JointState):
         if msg.name and msg.position:

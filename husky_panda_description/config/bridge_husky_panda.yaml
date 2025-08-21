@@ -15,7 +15,7 @@
   direction: GZ_TO_ROS
   lazy: true
 
-- ros_topic_name: "/odom"
+- ros_topic_name: "/wheel/odom"
   gz_topic_name: "/odom"
   ros_type_name: "nav_msgs/msg/Odometry"
   gz_type_name: "gz.msgs.Odometry"

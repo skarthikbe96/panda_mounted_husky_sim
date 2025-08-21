@@ -63,18 +63,18 @@
         <mesh filename="package://husky_panda_description/husky_panda_model/panda_mounted_husky/husky_robot_description/meshes/base_link.dae" scale="1 1 1"/>
       </geometry>
     </visual>
-    <visual name="front_bumper_visual">
+    <!-- <visual name="front_bumper_visual">
       <origin rpy="0 0 0" xyz="0.48 0 0.091"/>
       <geometry>
         <mesh filename="package://husky_panda_description/husky_panda_model/panda_mounted_husky/husky_robot_description/meshes/bumper.dae"/>
       </geometry>
-    </visual>
-    <visual name="rear_bumper_visual">
+    </visual> -->
+    <!-- <visual name="rear_bumper_visual">
       <origin rpy="0 0 3.14159" xyz="-0.48 0 0.091"/>
       <geometry>
         <mesh filename="package://husky_panda_description/husky_panda_model/panda_mounted_husky/husky_robot_description/meshes/bumper.dae"/>
       </geometry>
-    </visual>
+    </visual> -->
     <visual name="top_chassis_visual">
       <origin rpy="0 0 0" xyz="0 0 0"/>
       <geometry>
