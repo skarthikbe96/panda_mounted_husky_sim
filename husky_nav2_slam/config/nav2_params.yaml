@@ -240,14 +240,14 @@ local_costmap:
       filters: ["keepout_filter"]
       keepout_filter:
         plugin: "nav2_costmap_2d::KeepoutFilter"
-        enabled: KEEPOUT_ZONE_ENABLED
+        enabled: false
         filter_info_topic: "keepout_costmap_filter_info"
         override_lethal_cost: True
         lethal_override_cost: 200
       inflation_layer:
         plugin: "nav2_costmap_2d::InflationLayer"
         cost_scaling_factor: 3.0
-        inflation_radius: 0.60
+        inflation_radius: 0.80
       voxel_layer:
         plugin: "nav2_costmap_2d::VoxelLayer"
         enabled: True
@@ -265,7 +265,7 @@ local_costmap:
           #   * User chosen topic is `scan`.
           #   * Topic will be remapped to `/tb4/scan` without `local_costmap`.
           #   * Use global topic `/scan` if you do not wish the node namespace to apply
-          topic: scan
+          topic: /planar_laser/scan
           max_obstacle_height: 2.0
           clearing: True
           marking: True
@@ -314,7 +314,7 @@ global_costmap:
           #   * User chosen topic is `scan`.
           #   * Topic will be remapped to `/tb4/scan` without `global_costmap`.
           #   * Use global topic `/scan` if you do not wish the node namespace to apply
-          topic: scan
+          topic: /planar_laser/scan
           max_obstacle_height: 2.0
           clearing: True
           marking: True
@@ -329,7 +329,7 @@ global_costmap:
       inflation_layer:
         plugin: "nav2_costmap_2d::InflationLayer"
         cost_scaling_factor: 3.0
-        inflation_radius: 0.6
+        inflation_radius: 0.8
       always_send_full_costmap: True
       introspection_mode: "disabled"
 
@@ -515,7 +515,7 @@ collision_monitor:
     observation_sources: ["scan"]
     scan:
       type: "scan"
-      topic: "scan"
+      topic: "/planar_laser/scan"
       min_height: 0.15
       max_height: 2.0
       enabled: True
