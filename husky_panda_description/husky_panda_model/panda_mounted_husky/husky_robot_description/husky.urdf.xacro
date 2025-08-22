@@ -424,7 +424,7 @@
               </horizontal>
             </scan>
             <range>
-              <min>0.60</min>
+              <min>0.95</min>
               <max>25.0</max>
               <resolution>0.01</resolution>
             </range>
