@@ -514,7 +514,7 @@ collision_monitor:
       enabled: True
     observation_sources: ["scan"]
     scan:
-      type: "scan"
+      type: "LaserScan"
       topic: "/planar_laser/scan"
       min_height: 0.15
       max_height: 2.0

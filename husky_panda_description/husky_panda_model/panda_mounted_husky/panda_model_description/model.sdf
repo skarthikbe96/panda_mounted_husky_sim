@@ -336,35 +336,44 @@
       </visual>
     </link>
 
-    <!-- Fixed joint from link7 to the camera link, located at the wrist_mount frame -->
-    <joint name="wrist_cam_mount" type="fixed">
+    <!-- Fixed joint from link7 to the camera link, located at the gripper_mount frame -->
+    <joint name="gripper_cam_mount" type="fixed">
       <parent>panda_link7</parent>        <!-- must be a LINK -->
-      <child>wrist_cam_link</child>
-      <pose relative_to="wrist_mount">0 0 0 0 0 0</pose>
+      <child>gripper_cam_link</child>
+      <pose relative_to="gripper_mount">0 0 0 0 0 0</pose>
     </joint>
 
-    <link name="wrist_cam_link">
+    <link name="gripper_cam_link">
       <!-- push the camera forward 5 cm from the mount frame -->
-      <pose relative_to="wrist_cam_mount">0 0 0.05 0 0 0</pose>
+      <pose relative_to="gripper_cam_mount">0 0 0.05 0 0 0</pose>
 
       <inertial>
         <mass>0.08</mass>
         <inertia>
-          <ixx>1e-4</ixx><iyy>1e-4</iyy><izz>1e-4</izz>
+              <ixx>1.8e-4</ixx><iyy>5.0e-5</iyy><izz>1.8e-4</izz>
           <ixy>0</ixy><ixz>0</ixz><iyz>0</iyz>
         </inertia>
       </inertial>
 
-      <visual name="wrist_cam_debug">
-        <geometry><box><size>0.06 0.02 0.02</size></box></geometry>
-        <material>
-          <diffuse>0 1 0 1</diffuse>
-          <ambient>0.3 0.3 0.3 1</ambient>
-        </material>
+      <visual name="realsense_d415_vis">
+        <pose>0 -0.02 0  1.57079632679 0 1.57079632679</pose>
+        <geometry>
+          <mesh>
+            <uri>meshes/d435.dae</uri>
+            <scale>0.001 0.001 0.001</scale>
+          </mesh>
+        </geometry>
       </visual>
 
+      <collision name="realsense_d415_col">
+        <pose>-0.0125 -0.02 0  0 0 0</pose>
+          <geometry>
+            <box size="0.02005 0.099 0.023"/>
+          </geometry>
+      </collision>
+
       <!-- RGB-D sensor -->
-      <sensor name="wrist_rgbd" type="rgbd_camera">
+      <sensor name="gripper_rgbd" type="rgbd_camera">
         <pose>0.015 0 0 0 -1.57079632679 0</pose>
         <update_rate>30</update_rate>
         <always_on>true</always_on>
@@ -375,12 +384,12 @@
           <clip><near>0.10</near><far>5.0</far></clip>
         </camera>
         <!-- Gazebo base topic (GZ will append /image, /depth_image, /camera_info, /points) -->
-        <topic>/panda/wrist/rgbd</topic>
+        <topic>/panda/gripper/rgbd</topic>
       </sensor>
     </link>
 
     <!-- Optical frame for ROS conventions: Z forward, X right, Y down -->
-    <!-- <frame name="wrist_cam_optical_frame" attached_to="wrist_cam_link">
+    <!-- <frame name="gripper_cam_optical_frame" attached_to="gripper_cam_link">
       <pose>0 0 0 -1.57079632679 0 -1.57079632679</pose>
     </frame> -->
 
@@ -611,12 +620,12 @@
       </axis>
     </joint>
 
-    <!-- wrist mount frame (kept) -->
-    <frame name="wrist_mount" attached_to="panda_link7">
+    <!-- gripper mount frame (kept) -->
+    <frame name="gripper_mount" attached_to="panda_link7">
       <pose>0 0 0.107 0 0 -0.7853981633974483</pose>
     </frame>
 
-    <!-- wrist Joints -->
+    <!-- gripper Joints -->
     <joint name="panda_finger_joint1" type="prismatic">
       <pose relative_to="panda_link7">0 0 0.1654 0 0 -0.7853981633974483</pose>
       <parent>panda_link7</parent>
@@ -660,6 +669,11 @@
         https://github.com/mkrizmancic/franka_gazebo/blob/4a88ce6ca7d3d7bb87bd3fbe91e12873cc42f9b9/config/default.yaml-->
     <!-- Joint position controllers (Gazebo Sim) -->
     <!-- J1 -->
+
+    <!-- <plugin filename="libgz_ros2_control-system.so" name="gz_ros2_control::GazeboSimROS2ControlPlugin">
+        <parameters>/home/rebellion/mobile_robotics/gz_start/robot_models/panda_arm_model/colcon_ws/src/husky_panda_description/config/controller.yaml</parameters>
+    </plugin> -->
+
     <plugin filename="libgz-sim-joint-position-controller-system.so"
             name="gz::sim::systems::JointPositionController">
       <joint_name>panda_joint1</joint_name>
@@ -723,9 +737,9 @@
     <plugin filename="libgz-sim-joint-position-controller-system.so"
             name="gz::sim::systems::JointPositionController">
       <joint_name>panda_joint7</joint_name>
-      <p_gain>80</p_gain><d_gain>8</d_gain><i_gain>0</i_gain>  <!-- no integral -->
+      <p_gain>80</p_gain><d_gain>8</d_gain><i_gain>0</i_gain>  
       <i_min>-1</i_min><i_max>1</i_max>
-      <cmd_min>-12</cmd_min><cmd_max>12</cmd_max>                 <!-- more authority -->
+      <cmd_min>-12</cmd_min><cmd_max>12</cmd_max>                
       <topic>/model/panda/joint/panda_joint7/cmd_pos</topic>
     </plugin>
 
@@ -747,5 +761,8 @@
       <cmd_min>-40</cmd_min><cmd_max>40</cmd_max>
       <topic>/model/panda/joint/panda_finger_joint2/cmd_pos</topic>
     </plugin>
-  </model>
+
+
+    </model>
 </sdf>
+

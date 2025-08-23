@@ -299,6 +299,43 @@
         </visual>
       </link>
 
+      <!-- camera_pan_tilt on the gimbal -->
+    <gazebo reference="tilt_gimbal_link">
+      <sensor name="camera_pan_tilt" type="rgbd_camera">
+        <topic>camera_pan_tilt</topic>
+        <pose>0 0 0.03 0 0 0</pose>
+        <update_rate>30</update_rate>
+        <camera name="camera_pan_tilt">
+          <horizontal_fov>1.5184</horizontal_fov>
+          <lens>
+            <intrinsics>
+              <fx>337.22195</fx>
+              <fy>337.22195</fy>
+              <cx>320.5</cx>
+              <cy>240.5</cy>
+              <s>0</s>
+            </intrinsics>
+          </lens>
+          <distortion>
+            <k1>0.0</k1><k2>0.0</k2><k3>0.0</k3>
+            <p1>0.0</p1><p2>0.0</p2>
+            <center>0.5 0.5</center>
+          </distortion>
+          <image>
+            <width>640</width>
+            <height>480</height>
+            <format>R8G8B8</format>
+          </image>
+          <clip><near>0.01</near><far>300</far></clip>
+          <depth_camera><clip><near>0.1</near><far>10</far></clip></depth_camera>
+          <noise>
+            <type>gaussian</type><mean>0</mean><stddev>0.007</stddev>
+          </noise>
+        </camera>
+      </sensor>
+    </gazebo>
+
+
       <!-- planar_lidar_link -->
       <link name="planar_lidar_link"/>
 
@@ -374,7 +411,7 @@
               <center>0.5 0.5</center>
             </distortion>
             <image>
-              <width>320</width><height>240</height><format>R8G8B8</format>
+              <width>640</width><height>480</height><format>R8G8B8</format>
             </image>
             <clip><near>0.01</near><far>300</far></clip>
             <depth_camera><clip><near>0.1</near><far>10</far></clip></depth_camera>
@@ -400,7 +437,7 @@
               <center>0.5 0.5</center>
             </distortion>
             <image>
-              <width>320</width><height>240</height><format>R8G8B8</format>
+              <width>640</width><height>480</height><format>R8G8B8</format>
             </image>
             <clip><near>0.01</near><far>300</far></clip>
             <depth_camera><clip><near>0.1</near><far>10</far></clip></depth_camera>

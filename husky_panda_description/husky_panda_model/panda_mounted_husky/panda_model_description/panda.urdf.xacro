@@ -109,20 +109,30 @@
   </link>
 
   <!-- SDF frame as massless link -->
-  <link name="wrist_mount"/>
+  <link name="gripper_mount"/>
   <!-- Camera body (small mass to keep physics stable) -->
-  <link name="wrist_cam_link">
+  <link name="gripper_cam_link">
     <inertial>
       <mass value="0.08"/>
       <origin xyz="0 0 0" rpy="0 0 0"/>
-      <inertia ixx="0.0001" iyy="0.0001" izz="0.0001" ixy="0" ixz="0" iyz="0"/>
+       <inertia ixx="1.8e-4" iyy="5.0e-5" izz="1.8e-4" ixy="0" ixz="0" iyz="0"/>
     </inertial>
-    <visual name="wrist_cam_debug">
-      <geometry><box size="0.06 0.02 0.02"/></geometry>
+     <visual name="realsense_d415_vis">
+      <origin xyz="0 -0.02 0" rpy="1.57079632679 0 1.57079632679"/>
+      <geometry>
+        <mesh filename="${panda_mesh_prefix}/d415.stl" scale="0.001 0.001 0.001"/>
+      </geometry>
     </visual>
-  </link>
+
+    <collision name="realsense_d415_col">
+      <origin xyz="-0.0125 -0.02 0" rpy="0 0 0"/>
+      <geometry>
+        <box size="0.02005 0.099 0.023"/>
+      </geometry>
+    </collision> 
+     </link>
   <!-- REP 103 optical frame -->
-  <link name="wrist_cam_optical_frame"/>
+  <link name="gripper_cam_optical_frame"/>
 
   <!-- Fingers -->
   <link name="panda_leftfinger">
@@ -219,19 +229,19 @@
   </joint>
 
   <!-- fixed frames -->
-  <joint name="panda_wrist_mount" type="fixed">
-    <parent link="panda_link7"/><child link="wrist_mount"/>
+  <joint name="panda_gripper_mount" type="fixed">
+    <parent link="panda_link7"/><child link="gripper_mount"/>
     <origin xyz="0 0 0.107" rpy="0 0 -0.7853981633974483"/>
   </joint>
 
-  <joint name="wrist_cam_mount" type="fixed">
-    <parent link="wrist_mount"/><child link="wrist_cam_link"/>
-    <!-- SDF had +5 cm forward from wrist_mount -->
+  <joint name="gripper_cam_mount" type="fixed">
+    <parent link="gripper_mount"/><child link="gripper_cam_link"/>
+    <!-- SDF had +5 cm forward from gripper_mount -->
     <origin xyz="0 0 0.05" rpy="0 0 0"/>
   </joint>
 
-  <joint name="wrist_cam_optical_joint" type="fixed">
-    <parent link="wrist_cam_link"/><child link="wrist_cam_optical_frame"/>
+  <joint name="gripper_cam_optical_joint" type="fixed">
+    <parent link="gripper_cam_link"/><child link="gripper_cam_optical_frame"/>
     <!-- Z forward, X right, Y down -->
     <origin xyz="0 0 0" rpy="-1.57079632679 0 -1.57079632679"/>
   </joint>
@@ -273,17 +283,17 @@
     <joint name="panda_joint6"><command_interface name="position"/><state_interface name="position"/><state_interface name="velocity"/><state_interface name="effort"/></joint>
     <joint name="panda_joint7"><command_interface name="position"/><state_interface name="position"/><state_interface name="velocity"/><state_interface name="effort"/></joint>
 
-    <!-- wrist fingers -->
+    <!-- gripper fingers -->
     <joint name="panda_finger_joint1"><command_interface name="position"/><state_interface name="position"/><state_interface name="velocity"/></joint>
     <joint name="panda_finger_joint2"><command_interface name="position"/><state_interface name="position"/><state_interface name="velocity"/></joint>
   </ros2_control>
 
   <!-- ================== Gazebo: load ros2_control, friction, and sensor ================== -->
-  <!-- <gazebo>
+  <gazebo>
     <plugin filename="libgz_ros2_control-system.so" name="gz_ros2_control::GazeboSimROS2ControlPlugin">
-      <parameters>/config/controllers.yaml</parameters>
+      <parameters>/home/rebellion/mobile_robotics/gz_start/robot_models/panda_arm_model/colcon_ws/src/husky_panda_description/config/controller.yaml</parameters>
     </plugin>
-  </gazebo> -->
+  </gazebo>
 
   <gazebo reference="panda_link0"><gravity>false</gravity></gazebo>
 
@@ -406,13 +416,13 @@
   <gazebo reference="panda_rightfinger"><mu1>1.13</mu1><mu2>1.13</mu2></gazebo>
 
   <!-- Embed the RGB-D sensor (GZ Sim understands SDF inside <gazebo> in URDF) -->
-  <gazebo reference="wrist_cam_link">
-    <sensor name="wrist_rgbd" type="rgbd_camera">
+  <gazebo reference="gripper_cam_link">
+    <sensor name="gripper_rgbd" type="rgbd_camera">
       <pose>0.015 0 0 0 -1.57079632679 0</pose>
       <update_rate>30</update_rate>
       <always_on>true</always_on>
       <visualize>true</visualize>
-      <topic>/panda/wrist/rgbd</topic>
+      <topic>/panda/gripper/rgbd</topic>
       <camera>
         <horizontal_fov>1.0471975512</horizontal_fov>
         <image><width>640</width><height>480</height><format>R8G8B8</format></image>

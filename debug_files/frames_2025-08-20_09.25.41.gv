@@ -5,11 +5,11 @@ digraph G {
 "base_link" -> "front_laser_link"[label=" Broadcaster: default_authority\nAverage rate: 10000.0\nBuffer length: 0.0\nMost recent transform: 0.0\nOldest transform: 0.0\n"];
 "base_link" -> "panda_link0"[label=" Broadcaster: default_authority\nAverage rate: 10000.0\nBuffer length: 0.0\nMost recent transform: 0.0\nOldest transform: 0.0\n"];
 "base_link" -> "imu_link"[label=" Broadcaster: default_authority\nAverage rate: 10000.0\nBuffer length: 0.0\nMost recent transform: 0.0\nOldest transform: 0.0\n"];
-"panda_link7" -> "wrist_mount"[label=" Broadcaster: default_authority\nAverage rate: 10000.0\nBuffer length: 0.0\nMost recent transform: 0.0\nOldest transform: 0.0\n"];
+"panda_link7" -> "gripper_mount"[label=" Broadcaster: default_authority\nAverage rate: 10000.0\nBuffer length: 0.0\nMost recent transform: 0.0\nOldest transform: 0.0\n"];
 "panda_link6" -> "panda_link7"[label=" Broadcaster: default_authority\nAverage rate: 10.204\nBuffer length: 4.9\nMost recent transform: 116.4\nOldest transform: 111.5\n"];
 "base_link" -> "planar_lidar_link"[label=" Broadcaster: default_authority\nAverage rate: 10000.0\nBuffer length: 0.0\nMost recent transform: 0.0\nOldest transform: 0.0\n"];
-"wrist_mount" -> "wrist_cam_link"[label=" Broadcaster: default_authority\nAverage rate: 10000.0\nBuffer length: 0.0\nMost recent transform: 0.0\nOldest transform: 0.0\n"];
-"wrist_cam_link" -> "wrist_cam_optical_frame"[label=" Broadcaster: default_authority\nAverage rate: 10000.0\nBuffer length: 0.0\nMost recent transform: 0.0\nOldest transform: 0.0\n"];
+"gripper_mount" -> "gripper_cam_link"[label=" Broadcaster: default_authority\nAverage rate: 10000.0\nBuffer length: 0.0\nMost recent transform: 0.0\nOldest transform: 0.0\n"];
+"gripper_cam_link" -> "gripper_cam_optical_frame"[label=" Broadcaster: default_authority\nAverage rate: 10000.0\nBuffer length: 0.0\nMost recent transform: 0.0\nOldest transform: 0.0\n"];
 "base_link" -> "front_left_wheel_link"[label=" Broadcaster: default_authority\nAverage rate: 50.201\nBuffer length: 4.98\nMost recent transform: 116.48\nOldest transform: 111.5\n"];
 "base_link" -> "front_right_wheel_link"[label=" Broadcaster: default_authority\nAverage rate: 50.201\nBuffer length: 4.98\nMost recent transform: 116.48\nOldest transform: 111.5\n"];
 "base_link" -> "pan_gimbal_link"[label=" Broadcaster: default_authority\nAverage rate: 50.201\nBuffer length: 4.98\nMost recent transform: 116.48\nOldest transform: 111.5\n"];

@@ -8,8 +8,6 @@ from launch.substitutions import Command, PathJoinSubstitution, FindExecutable
 from launch.actions import TimerAction
 from launch_ros.actions import Node
 
-
-
 def generate_launch_description():
     desc = get_package_share_directory('husky_panda_description')
 
@@ -24,6 +22,9 @@ def generate_launch_description():
         name='GZ_SIM_RESOURCE_PATH',
         value=f"{desc}:{os.path.join(desc, 'husky_panda_model')}:{os.path.join(desc, 'husky_panda_model', 'panda_mounted_husky')}"
     )
+
+    # SetEnvironmentVariable('GZ_SIM_SYSTEM_PLUGIN_PATH', '/opt/ros/jazzy/lib'),
+    # SetEnvironmentVariable('LD_LIBRARY_PATH', '/opt/ros/jazzy/lib'),
 
     # xacro -> robot_description for RViz/robot_state_publisher
     robot_description = ParameterValue(
@@ -66,6 +67,21 @@ def generate_launch_description():
         # remappings=[('/joint_states', '/joint_states_cmd')],
         output='screen'
     )
+
+
+    # spawner_jsb = Node(
+    #     package='controller_manager',
+    #     executable='spawner',
+    #     arguments=['joint_state_broadcaster', '--controller-manager', '/controller_manager'],
+    #     output='screen'
+    #     )
+
+    # spawner_arm = Node(
+    #     package='controller_manager',
+    #     executable='spawner',
+    #     arguments=['panda_arm_controller', '--controller-manager', '/controller_manager'],
+    #     output='screen'
+    #     )
 
     # Your single Python relay that republishes /joint_states_cmd -> /model/panda/joint/*/cmd_pos
     js2gz = Node(
@@ -127,6 +143,15 @@ def generate_launch_description():
         output='screen'
     )
 
+    tf_gz_base_camera_pan_tilt = Node(
+        package='tf2_ros', executable='static_transform_publisher',
+        name='tf_gz_base_to_camera_pan_tilt',
+        arguments=['0.424','0.0','0.490','0','0.5236','0',    
+                'panda_mounted_husky/husky/base_link',
+                'panda_mounted_husky/husky/base_link/camea_pan_tilt'],
+        output='screen'
+    )
+
     # husky/base_link -> imu
     tf_gz_base_imu = Node(
         package='tf2_ros', executable='static_transform_publisher',
@@ -134,6 +159,33 @@ def generate_launch_description():
         arguments=['0','0','0','0','0','0',
                 'panda_mounted_husky/husky/base_link',
                 'panda_mounted_husky/husky/base_link/imu_sensor'],
+        output='screen'
+    )
+
+    tf_gz_imu_front_laser = Node(
+        package='tf2_ros', executable='static_transform_publisher',
+        name='tf_gz_imu_to_front_laser',
+        arguments=['0.424','0','0.387','0','0','0', '1'
+                'panda_mounted_husky/husky/base_link/imu_sensor',
+                'panda_mounted_husky/husky/base_link/front_laser'],
+        output='screen'
+    )
+
+    tf_gz_imu_planar_laser = Node(
+        package='tf2_ros', executable='static_transform_publisher',
+        name='tf_gz_imu_to_planar_laser',
+        arguments=['0.474','0','0.127','0','0','0', '1'
+                'panda_mounted_husky/husky/base_link/imu_sensor',
+                'panda_mounted_husky/husky/base_link/planar_laser'],
+        output='screen'
+    )
+
+    tf_gz_imu_camera_front = Node(
+        package='tf2_ros', executable='static_transform_publisher',
+        name='tf_gz_imu_camera_front',
+        arguments=['0.468','0','0.360','0','0','0', '1'
+                'panda_mounted_husky/husky/base_link/imu_sensor',
+                'panda_mounted_husky/husky/base_link/camera_front'],
         output='screen'
     )
 
@@ -164,6 +216,8 @@ def generate_launch_description():
         TimerAction(period=0.5, actions=[
             rsp, 
             jsp, 
+            # spawner_jsb,
+            # spawner_arm,
             js2gz, 
             rviz, 
             tf_base_husky_base, 
@@ -172,6 +226,8 @@ def generate_launch_description():
             tf_gz_base_imu ,
             tf_gz_base_camera_front,
             tf_gz_base_camera_down,
+            tf_gz_base_camera_pan_tilt,
+            tf_gz_imu_front_laser,
             ekf_node
         ]),
 
