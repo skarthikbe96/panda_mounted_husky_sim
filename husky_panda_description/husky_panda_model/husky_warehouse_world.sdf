@@ -8,10 +8,6 @@
       <max_contacts>10</max_contacts>
     </physics>
 
-    <!-- <plugin name='ignition::gazebo::systems::Physics' filename='libignition-gazebo-physics-system.so'/>
-    <plugin name='ignition::gazebo::systems::UserCommands' filename='libignition-gazebo-user-commands-system.so'/>
-    <plugin name='ignition::gazebo::systems::SceneBroadcaster' filename='libignition-gazebo-scene-broadcaster-system.so'/>
-    <plugin name='ignition::gazebo::systems::Sensors' filename='libignition-gazebo-sensors-system.so'> -->
     <plugin filename="gz-sim-physics-system" name="gz::sim::systems::Physics"/>
     <plugin filename="gz-sim-user-commands-system" name="gz::sim::systems::UserCommands"/>
     <plugin filename="gz-sim-scene-broadcaster-system" name="gz::sim::systems::SceneBroadcaster"/>
@@ -209,92 +205,6 @@
       <name>panda_mounted_husky</name>
       <pose>0 0 0.2 0 0 0</pose>
     </include>
-
-    <!-- Static Cube Obstacle -->
-    <!-- <model name="obstacle_cube">
-      <static>true</static>
-      <pose>3 0 0.5 0 0 0</pose>
-      <link name="link">
-        <collision name="collision">
-          <geometry>
-            <box>
-              <size>1 1 1</size>
-            </box>
-          </geometry>
-        </collision>
-        <visual name="visual">
-          <geometry>
-            <box>
-              <size>1 1 1</size>
-            </box>
-          </geometry>
-          <material>
-            <ambient>0.1 0.4 0.1 1</ambient>
-            <diffuse>0.1 0.9 0.1 1</diffuse>
-            <specular>0.2 0.2 0.2 1</specular>
-            <emissive>0 0 0 1</emissive>
-          </material>
-        </visual>
-      </link>
-    </model> -->
-
-    <!-- Static Table -->
-    <!-- <model name="table">
-      <static>true</static>
-      <pose>-3 -2 0.75 0 0 0</pose>
-      <link name="link">
-        <collision name="collision">
-          <geometry>
-            <box>
-              <size>2 1 1.5</size>
-            </box>
-          </geometry>
-        </collision>
-        <visual name="visual">
-          <geometry>
-            <box>
-              <size>2 1 1.5</size>
-            </box>
-          </geometry>
-          <material>
-            <ambient>0.6 0.0 0.0 1</ambient>
-            <diffuse>1.0 0.0 0.0 1</diffuse>
-          </material>
-        </visual>
-      </link>
-    </model> -->
-
-    <!-- Movable Sphere -->
-    <!-- <model name="movable_sphere">
-      <static>false</static>
-      <pose>1.5 2 0.5 0 0 0</pose>
-      <link name="link">
-        <inertial>
-          <mass>1.0</mass>
-        </inertial>
-        <collision name="collision">
-          <geometry>
-            <sphere>
-              <radius>0.5</radius>
-            </sphere>
-          </geometry>
-        </collision>
-        <visual name="visual">
-          <geometry>
-            <sphere>
-              <radius>0.5</radius>
-            </sphere>
-          </geometry>
-          <material>
-            <ambient>0.0 0.0 0.6 1</ambient>
-            <diffuse>0.0 0.0 1.0 1</diffuse>
-          </material>
-        </visual>
-      </link>
-    </model> -->
-
-
-
 
   </world>
 
