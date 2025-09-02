@@ -881,7 +881,7 @@
     <!-- ROS 2 Control plugin -->
     <gazebo>
       <plugin filename="libgz_ros2_control-system.so" name="gz_ros2_control::GazeboSimROS2ControlPlugin">
-          <parameters>/home/rebellion/mobile_robotics/gz_start/robot_models/panda_arm_model/colcon_ws/src/husky_panda_description/config/ros2_controllers.yaml</parameters>
+          <parameters>$(find husky_panda_description)/config/ros2_controllers.yaml</parameters>
       </plugin> 
     </gazebo>
 

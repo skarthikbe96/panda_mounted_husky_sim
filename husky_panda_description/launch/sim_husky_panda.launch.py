@@ -47,6 +47,7 @@ def generate_launch_description() -> LaunchDescription:
     gazebo = ExecuteProcess(
         cmd=["gz", "sim", "-v", "3", world],
         output="screen",
+        cwd=pkg_husky_panda,
     )
 
     # Spawn robot into Gazebo (SDF only)
@@ -212,10 +213,19 @@ def generate_launch_description() -> LaunchDescription:
         # remappings=[("/odometry/filtered", "/odom")]
     )
 
-    return LaunchDescription(
-        declared_arguments +
-        [model_search, gazebo, spawn_entity, robot_state_pub, rviz, bridge, ekf_node, delayed_controllers,tf_base_husky_base,twist_bridge, tf_gz_base_planar, tf_gz_base_front_laser, tf_gz_base_imu]
-    )
+    actions = [
+        SetEnvironmentVariable(
+            name='HUSKY_PANDA_DESCRIPTION_DIR',
+            value=FindPackageShare('husky_panda_description')
+        ),
+        *declared_arguments,  # works whether this is a list or tuple
+        model_search, gazebo, spawn_entity, robot_state_pub, rviz, bridge,
+        ekf_node, delayed_controllers, tf_base_husky_base, twist_bridge,
+        tf_gz_base_planar, tf_gz_base_front_laser, tf_gz_base_imu,
+    ]
+
+
+    return LaunchDescription(actions)    
 
 
 def generate_declared_arguments() -> List[DeclareLaunchArgument]:

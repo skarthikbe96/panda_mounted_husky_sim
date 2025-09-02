@@ -124,6 +124,16 @@ ros2 param load /dummy /home/rebellion/mobile_robotics/gz_start/robot_models/pan
 
 ```
 
+
+## controller_manager commands
+```bash
+ros2 control list_controllers
+
+ros2 param get /controller_manager ros__parameters
+
+ros2 control list_hardware_interfaces
+```
+
 ## 📐 Platform Specs
 
 ### Husky Base (from SDF)
