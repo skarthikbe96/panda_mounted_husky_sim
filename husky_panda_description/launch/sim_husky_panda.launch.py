@@ -1,234 +1,256 @@
-from launch import LaunchDescription
-from launch.actions import SetEnvironmentVariable, ExecuteProcess
-from launch_ros.actions import Node
-from ament_index_python.packages import get_package_share_directory
-from launch_ros.parameter_descriptions import ParameterValue
+#!/usr/bin/env -S ros2 launch
+"""Launch Husky with mounted Panda arm in Gazebo + RViz2 (without MoveIt)"""
+
 import os
-from launch.substitutions import Command, PathJoinSubstitution, FindExecutable
-from launch.actions import TimerAction
+from typing import List
+from ament_index_python.packages import get_package_share_directory
+
+from launch import LaunchDescription
+from launch.actions import (
+    DeclareLaunchArgument,
+    ExecuteProcess,
+    SetEnvironmentVariable,
+)
+from launch.substitutions import (
+    LaunchConfiguration,
+    Command,
+    FindExecutable,
+    PathJoinSubstitution,
+)
 from launch_ros.actions import Node
+from launch_ros.substitutions import FindPackageShare
+from launch_ros.parameter_descriptions import ParameterValue
+from launch.actions import TimerAction
 
-def generate_launch_description():
-    desc = get_package_share_directory('husky_panda_description')
 
-    # world_path   = PathJoinSubstitution([desc, 'husky_panda_model', 'panda_empty_world.sdf'])
-    world_path   = PathJoinSubstitution([desc, 'husky_panda_model', 'husky_warehouse_world.sdf'])
-    urdf_xacro   = PathJoinSubstitution([desc, 'husky_panda_model', 'panda_mounted_husky', 'panda_mounted_husky.urdf.xacro'])
-    bridge_yaml  = PathJoinSubstitution([desc, 'config', 'bridge_husky_panda.yaml'])   
-    rviz_config  = PathJoinSubstitution([desc, 'husky_panda_model', 'husky_panda_rviz.rviz'])
+def generate_launch_description() -> LaunchDescription:
+    # Declare all launch arguments
+    declared_arguments = generate_declared_arguments()
 
-    # Let Gazebo find local models (folders that contain your model resources)
+    # Launch configs
+    rviz_config = LaunchConfiguration("rviz_config")
+    bridge_yaml = LaunchConfiguration("bridge_yaml")
+    world = LaunchConfiguration("world")
+    use_sim_time = LaunchConfiguration("use_sim_time")
+    log_level = LaunchConfiguration("log_level")
+
+    # Resolve package path
+    pkg_husky_panda = get_package_share_directory("husky_panda_description")
+
+    # Gazebo resource path
     model_search = SetEnvironmentVariable(
-        name='GZ_SIM_RESOURCE_PATH',
-        value=f"{desc}:{os.path.join(desc, 'husky_panda_model')}:{os.path.join(desc, 'husky_panda_model', 'panda_mounted_husky')}"
+        name="GZ_SIM_RESOURCE_PATH",
+        value=f"{pkg_husky_panda}/husky_panda_model:{pkg_husky_panda}/husky_panda_model/panda_mounted_husky:{pkg_husky_panda}/husky_panda_model/panda_mounted_husky/meshes"
     )
 
-    # SetEnvironmentVariable('GZ_SIM_SYSTEM_PLUGIN_PATH', '/opt/ros/jazzy/lib'),
-    # SetEnvironmentVariable('LD_LIBRARY_PATH', '/opt/ros/jazzy/lib'),
-
-    # xacro -> robot_description for RViz/robot_state_publisher
-    robot_description = ParameterValue(
-        Command([FindExecutable(name='xacro'), ' ', urdf_xacro]),
-        value_type=str
-    )
-    gz = ExecuteProcess(
-        cmd=['gz', 'sim', '-v', '3', world_path],
-        output='screen'
+    # Gazebo simulation
+    gazebo = ExecuteProcess(
+        cmd=["gz", "sim", "-v", "3", world],
+        output="screen",
     )
 
-    # ROS <-> Gazebo bridge via YAML config (do NOT pass mappings as arguments)
+    # Spawn robot into Gazebo (SDF only)
+    spawn_entity = Node(
+        package="ros_gz_sim",
+        executable="create",
+        output="screen",
+        arguments=[
+            "-file", os.path.join(pkg_husky_panda, "husky_panda_model", "panda_mounted_husky","model.sdf"),
+            # "-name", "husky_panda",
+            "-x", "0.0", "-y", "0.0", "-z", "0.5",
+        ],
+    )
+
+    # Robot State Publisher (URDF → RViz visualization)
+    robot_state_pub = Node(
+        package="robot_state_publisher",
+        executable="robot_state_publisher",
+        output="screen",
+        arguments=["--ros-args", "--log-level", log_level],
+        parameters=[{
+            "use_sim_time": use_sim_time,
+            "robot_description": ParameterValue(
+                Command([
+                    PathJoinSubstitution([FindExecutable(name="xacro")]),
+                    " ",
+                    PathJoinSubstitution([
+                        FindPackageShare("husky_panda_description"),
+                        "husky_panda_model",
+                        "panda_mounted_husky",
+                        "panda_mounted_husky.urdf.xacro"
+                    ])
+                ]),
+                value_type=str,
+            )
+        }],
+    )
+
+    # RViz
+    rviz = Node(
+        package="rviz2",
+        executable="rviz2",
+        output="screen",
+        arguments=["-d", rviz_config, "--ros-args", "--log-level", log_level],
+        parameters=[{"use_sim_time": use_sim_time}],
+    )
+
+    # Bridge
     bridge = Node(
-        package='ros_gz_bridge',
-        executable='parameter_bridge',
-        name='ros_gz_bridge',
-        parameters=[{'config_file': bridge_yaml}],
-        output='screen'
+        package="ros_gz_bridge",
+        executable="parameter_bridge",
+        parameters=[{"use_sim_time": use_sim_time}, {"config_file": bridge_yaml}],
+        output="screen",
     )
 
-    # Robot State Publisher (URDF to TF for RViz)
-    rsp = Node(
-        package='robot_state_publisher',
-        executable='robot_state_publisher',
-        name='robot_state_publisher',
-        parameters=[{'use_sim_time': True, 
-                     'publish_frequency': 50.0,
-                      'robot_description': robot_description}],
+    # # ros2_control node
+    # ros2_control = Node(
+    #     package="controller_manager",
+    #     executable="ros2_control_node",
+    #     parameters=[{"use_sim_time": use_sim_time},
+    #                 os.path.join(pkg_husky_panda, "config", "ros2_controllers.yaml")],
+    #     output="screen",
+    # )
+
+    # Controller spawners
+
+    twist_bridge = Node(
+        package='husky_panda_description',     # your package name
+        executable='twist_to_stamped.py',         # entry point from setup.py
+        name='twist_to_stamped_bridge',
         output='screen',
-        # remappings=[('joint_states', 'joint_states_cmd')] 
-
+        parameters=[{
+            'in_topic': '/cmd_vel',
+            'out_topic': '/husky_velocity_controller/cmd_vel',
+            'frame_id': '',            # or 'base_link' if your controller expects it
+            'use_sim_time': True,      # set False if you’re not using /clock
+        }],
     )
 
-    # Joint sliders -> /joint_states_cmd
-    jsp = Node(
-        package='joint_state_publisher_gui',
-        executable='joint_state_publisher_gui',
-        name='joint_state_publisher_gui',
-        parameters=[{'use_sim_time': True}],
-        # remappings=[('/joint_states', '/joint_states_cmd')],
-        output='screen'
+    controllers = [
+        ExecuteProcess(
+            cmd=["ros2 run controller_manager spawner {}".format(ctrl)],
+            shell=True,
+            output="screen",
+        )
+        for ctrl in [
+            "joint_state_broadcaster",
+            "husky_velocity_controller",
+            "panda_arm_controller",
+            "panda_hand_controller",
+            "gimbal_controller",
+        ]
+    ]
+
+    # Delay controller spawning by 5 seconds
+    delayed_controllers = TimerAction(
+        period=10.0,
+        actions=controllers,
     )
 
-
-    # spawner_jsb = Node(
-    #     package='controller_manager',
-    #     executable='spawner',
-    #     arguments=['joint_state_broadcaster', '--controller-manager', '/controller_manager'],
-    #     output='screen'
-    #     )
-
-    # spawner_arm = Node(
-    #     package='controller_manager',
-    #     executable='spawner',
-    #     arguments=['panda_arm_controller', '--controller-manager', '/controller_manager'],
-    #     output='screen'
-    #     )
-
-    # Your single Python relay that republishes /joint_states_cmd -> /model/panda/joint/*/cmd_pos
-    js2gz = Node(
-        package='husky_panda_description',        # <-- this package
-        executable='husky_panda_bridge.py',          # <-- the script’s console entry name
-        name='husky_panda_bridge',
-        output='screen',
-        parameters=[{'use_sim_time': True}]
-    )
-
-    # base_link (robot) -> husky/base_link (GZ link)
-
-    tf_base_husky_base  = Node(
-        package='tf2_ros', executable='static_transform_publisher',
+    tf_base_husky_base = Node(
+        package='tf2_ros',
+        executable='static_transform_publisher',
         name='tf_base_to_gz_base',
-        arguments=['0','0','0','0','0','0',
-                'base_link',
-                'panda_mounted_husky/husky/base_link'],
+        arguments=[
+            "--x", "0", "--y", "0", "--z", "0",
+            "--roll", "0", "--pitch", "0", "--yaw", "0",
+            "--frame-id", "base_link",
+            "--child-frame-id", "panda_mounted_husky/base_link",
+                ],
         output='screen'
     )
 
-    # husky/base_link -> planar_laser
     tf_gz_base_planar = Node(
-        package='tf2_ros', executable='static_transform_publisher',
-        name='tf_gz_base_to_planar_laser',
-        arguments=['0.474','0.0','0.127','0','0','0',
-                'panda_mounted_husky/husky/base_link',
-                'panda_mounted_husky/husky/base_link/planar_laser'],
-        output='screen'
+        package="tf2_ros",
+        executable="static_transform_publisher",
+        name="tf_gz_base_to_planar_laser",
+        arguments=[
+            "--x", "0.474", "--y", "0.0", "--z", "0.127",
+            "--roll", "0", "--pitch", "0", "--yaw", "0",
+            "--frame-id", "panda_mounted_husky/base_link",
+            "--child-frame-id", "panda_mounted_husky/base_link/planar_laser",
+        ],
+        output="screen",
     )
 
-    # husky/base_link -> front_laser
     tf_gz_base_front_laser = Node(
-        package='tf2_ros', executable='static_transform_publisher',
-        name='tf_gz_base_to_front_laser',
-        arguments=['0.424','0.0','0.387','0','0','0',
-                'panda_mounted_husky/husky/base_link',
-                'panda_mounted_husky/husky/base_link/front_laser'],
-        output='screen'
+        package="tf2_ros",
+        executable="static_transform_publisher",
+        name="tf_gz_base_to_front_laser",
+        arguments=[
+            "--x", "0.424", "--y", "0.0", "--z", "0.387",
+            "--roll", "0", "--pitch", "0", "--yaw", "0",
+            "--frame-id", "panda_mounted_husky/base_link",
+            "--child-frame-id", "panda_mounted_husky/base_link/front_laser",
+        ],
+        output="screen",
     )
 
-    # husky/base_link -> camera_front
-    tf_gz_base_camera_front = Node(
-        package='tf2_ros', executable='static_transform_publisher',
-        name='tf_gz_base_to_camera_front',
-        arguments=['0.468','0.0','0.360','0','0','0',
-                'panda_mounted_husky/husky/base_link',
-                'panda_mounted_husky/husky/base_link/camera_front'],
-        output='screen'
-    )
-
-    # husky/base_link -> camera_down (fixed)
-    tf_gz_base_camera_down = Node(
-        package='tf2_ros', executable='static_transform_publisher',
-        name='tf_gz_base_to_camera_down',
-        arguments=['0.468','0.0','0.335','0','0.5236','0',
-                'panda_mounted_husky/husky/base_link',
-                'panda_mounted_husky/husky/base_link/camera_down'],
-        output='screen'
-    )
-
-    tf_gz_base_camera_pan_tilt = Node(
-        package='tf2_ros', executable='static_transform_publisher',
-        name='tf_gz_base_to_camera_pan_tilt',
-        arguments=['0.424','0.0','0.490','0','0.5236','0',    
-                'panda_mounted_husky/husky/base_link',
-                'panda_mounted_husky/husky/base_link/camea_pan_tilt'],
-        output='screen'
-    )
-
-    # husky/base_link -> imu
     tf_gz_base_imu = Node(
-        package='tf2_ros', executable='static_transform_publisher',
-        name='tf_gz_base_to_imu',
-        arguments=['0','0','0','0','0','0',
-                'panda_mounted_husky/husky/base_link',
-                'panda_mounted_husky/husky/base_link/imu_sensor'],
-        output='screen'
+        package="tf2_ros",
+        executable="static_transform_publisher",
+        name="tf_gz_base_to_imu",
+        arguments=[
+            "--x", "0", "--y", "0", "--z", "0",
+            "--roll", "0", "--pitch", "0", "--yaw", "0",
+            "--frame-id", "panda_mounted_husky/base_link",
+            "--child-frame-id", "panda_mounted_husky/base_link/imu_sensor",
+        ],
+        output="screen",
     )
 
-    tf_gz_imu_front_laser = Node(
-        package='tf2_ros', executable='static_transform_publisher',
-        name='tf_gz_imu_to_front_laser',
-        arguments=['0.424','0','0.387','0','0','0', '1'
-                'panda_mounted_husky/husky/base_link/imu_sensor',
-                'panda_mounted_husky/husky/base_link/front_laser'],
-        output='screen'
-    )
-
-    tf_gz_imu_planar_laser = Node(
-        package='tf2_ros', executable='static_transform_publisher',
-        name='tf_gz_imu_to_planar_laser',
-        arguments=['0.474','0','0.127','0','0','0', '1'
-                'panda_mounted_husky/husky/base_link/imu_sensor',
-                'panda_mounted_husky/husky/base_link/planar_laser'],
-        output='screen'
-    )
-
-    tf_gz_imu_camera_front = Node(
-        package='tf2_ros', executable='static_transform_publisher',
-        name='tf_gz_imu_camera_front',
-        arguments=['0.468','0','0.360','0','0','0', '1'
-                'panda_mounted_husky/husky/base_link/imu_sensor',
-                'panda_mounted_husky/husky/base_link/camera_front'],
-        output='screen'
-    )
 
     ekf_node = Node(
         package="robot_localization",
         executable="ekf_node",
         name="ekf_filter_node",
         output="screen",
-        parameters=[os.path.join(get_package_share_directory('husky_nav2_slam'), 'config', 'ekf.yaml'),
-                    {'use_sim_time': True}],
-        remappings=[("/odometry/filtered", "/odom")]
+        parameters=[
+            {"use_sim_time": use_sim_time},
+            LaunchConfiguration("ekf_yaml")
+        ],
+        # remappings=[("/odometry/filtered", "/odom")]
     )
 
-    # RViz (optional config file)
-    rviz = Node(
-        package='rviz2',
-        executable='rviz2',
-        name='rviz2',
-        output='screen',
-        parameters=[{'use_sim_time': True}],
-        arguments=['-d', rviz_config]
+    return LaunchDescription(
+        declared_arguments +
+        [model_search, gazebo, spawn_entity, robot_state_pub, rviz, bridge, ekf_node, delayed_controllers,tf_base_husky_base,twist_bridge, tf_gz_base_planar, tf_gz_base_front_laser, tf_gz_base_imu]
     )
 
-    return LaunchDescription([
-        model_search,
-        gz,
-        bridge,
-        TimerAction(period=0.5, actions=[
-            rsp, 
-            jsp, 
-            # spawner_jsb,
-            # spawner_arm,
-            js2gz, 
-            rviz, 
-            tf_base_husky_base, 
-            tf_gz_base_planar, 
-            tf_gz_base_front_laser,
-            tf_gz_base_imu ,
-            tf_gz_base_camera_front,
-            tf_gz_base_camera_down,
-            tf_gz_base_camera_pan_tilt,
-            tf_gz_imu_front_laser,
-            ekf_node
-        ]),
 
-    ])
+def generate_declared_arguments() -> List[DeclareLaunchArgument]:
+    """Generate list of all launch arguments"""
+    pkg_husky_panda = get_package_share_directory("husky_panda_description")
+    pkg_nav2 = get_package_share_directory("husky_nav2_slam")
+    return [
+        DeclareLaunchArgument(
+            "world",
+            default_value=os.path.join(pkg_husky_panda, "husky_panda_model", "husky_small_house_world.sdf"),
+            description="World file to load in Gazebo.",
+        ),
+        DeclareLaunchArgument(
+            "bridge_yaml",
+            default_value=os.path.join(pkg_husky_panda, "config", "bridge_husky_panda.yaml"),
+            description="YAML config for ros_gz_bridge.",
+        ),
+        DeclareLaunchArgument(
+            "rviz_config",
+            default_value=os.path.join(pkg_husky_panda, "rviz", "husky_panda_rviz.rviz"),
+            description="RViz2 config file.",
+        ),
+        DeclareLaunchArgument(
+            "use_sim_time",
+            default_value="true",
+            description="Use simulated clock if true.",
+        ),
+        DeclareLaunchArgument(
+            "log_level",
+            default_value="warn",
+            description="Logging level for all launched nodes.",
+        ),
+        DeclareLaunchArgument(
+            "ekf_yaml",
+            default_value=os.path.join(pkg_nav2, "config", "ekf.yaml"),
+            description="EKF parameters for robot_localization.",
+        ),
+    ]

@@ -2,7 +2,16 @@ cmake_minimum_required(VERSION 3.10)
 project(husky_panda_description)
 
 find_package(ament_cmake REQUIRED)
-
+find_package(controller_manager REQUIRED)
+find_package(gz_ros2_control REQUIRED)
+find_package(rclcpp REQUIRED)
+find_package(ros_gz REQUIRED)
+find_package(ros_gz_bridge REQUIRED)
+find_package(ros_gz_sim REQUIRED)
+find_package(ros2_control REQUIRED)
+find_package(ros2_controllers REQUIRED)
+find_package(trajectory_msgs REQUIRED)
+find_package(xacro REQUIRED)
 # Install resources
 
 # install(PROGRAMS scripts/js_to_gz_cmd.py
@@ -10,14 +19,12 @@ find_package(ament_cmake REQUIRED)
 
 install(PROGRAMS
   scripts/husky_panda_bridge.py
+  scripts/panda_trajectory_bridge.py
+  scripts/twist_to_stamped.py
   DESTINATION lib/${PROJECT_NAME}
 )
 
-install(DIRECTORY launch config worlds scripts
-  DESTINATION share/${PROJECT_NAME}
-)
-
-install(DIRECTORY husky_panda_model
+install(DIRECTORY config launch rviz husky_panda_model 
   DESTINATION share/${PROJECT_NAME})
 
 if(BUILD_TESTING)

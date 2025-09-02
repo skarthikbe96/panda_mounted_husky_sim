@@ -1,0 +1,79 @@
+controller_manager:
+  ros__parameters:
+    update_rate: 100  # Hz
+    use_sim_time: true
+
+    # Controllers to start automatically
+    joint_state_broadcaster:
+      type: joint_state_broadcaster/JointStateBroadcaster
+
+    husky_velocity_controller:
+      type: diff_drive_controller/DiffDriveController
+
+    panda_arm_controller:
+      type: joint_trajectory_controller/JointTrajectoryController
+
+    panda_hand_controller:
+      type: joint_trajectory_controller/JointTrajectoryController
+
+    gimbal_controller:
+      type: joint_trajectory_controller/JointTrajectoryController
+
+
+husky_velocity_controller:
+  ros__parameters:
+    left_wheel_names: ["front_left_wheel_joint", "rear_left_wheel_joint"]
+    right_wheel_names: ["front_right_wheel_joint", "rear_right_wheel_joint"]
+    publish_rate: 50.0
+    enable_odom_tf: true
+    odom_frame_id: odom
+    base_frame_id: base_link
+    cmd_vel_topic: cmd_vel
+    cmd_vel_timeout: 0.25
+    wheel_separation: 0.5708
+    wheel_radius: 0.1651
+    command_interfaces: ["velocity"]
+    state_interfaces: ["position", "velocity"]
+
+panda_arm_controller:
+  ros__parameters:
+    joints:
+      - panda_joint1
+      - panda_joint2
+      - panda_joint3
+      - panda_joint4
+      - panda_joint5
+      - panda_joint6
+      - panda_joint7
+    command_interfaces:
+      - position
+    state_interfaces:
+      - position
+      - velocity
+    constraints:
+      goal_time: 2.0
+      stopped_velocity_tolerance: 0.02
+
+panda_hand_controller:
+  ros__parameters:
+    joints:
+      - panda_finger_joint1
+      # - panda_finger_joint2
+    command_interfaces:
+      - position
+    state_interfaces:
+      - position
+      - velocity
+    constraints:
+      goal_time: 1.0
+
+gimbal_controller:
+  ros__parameters:
+    joints:
+      - pan_gimbal_joint
+      - tilt_gimbal_joint
+    command_interfaces:
+      - position
+    state_interfaces:
+      - position
+      - velocity

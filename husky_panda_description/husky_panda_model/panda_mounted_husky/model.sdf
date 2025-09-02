@@ -1,26 +1,848 @@
 <?xml version="1.0"?>
 <sdf version="1.7">
   <model name="panda_mounted_husky">
-    <!-- Husky base -->
-    <include>
-      <uri>file:///home/rebellion/mobile_robotics/gz_start/robot_models/panda_arm_model/colcon_ws/src/husky_panda_description/husky_panda_model/panda_mounted_husky/husky_robot_description</uri>
-      <!-- <uri>model://husky_robot_description</uri> -->
-      <name>husky</name>
+    <!-- =========================================================
+         HUSKY BASE (flattened from husky_robot_description)
+         ========================================================= -->
+    <link name="base_link">
       <pose>0 0 0 0 0 0</pose>
-    </include>
+      <inertial>
+        <pose>-0.000543 -0.084945 0.062329 0 0 0</pose>
+        <mass>46.064</mass>
+        <inertia>
+          <ixx>0.615397</ixx>
+          <ixy>-0.0240585</ixy>
+          <ixz>-0.120749</ixz>
+          <iyy>1.75388</iyy>
+          <iyz>-0.0028322</iyz>
+          <izz>2.03641</izz>
+        </inertia>
+      </inertial>
 
-    <!-- Panda arm placed on the top plate (z = 0.2325 in husky::base_link frame) -->
-    <include>
-      <uri>file:///home/rebellion/mobile_robotics/gz_start/robot_models/panda_arm_model/colcon_ws/src/husky_panda_description/husky_panda_model/panda_mounted_husky/panda_model_description</uri>
-      <!-- <uri>model://panda_model_description</uri> -->
-      <name>panda</name>
-      <pose>0 0 0.2325 0 0 0</pose>  <!-- adjust yaw here if needed -->
-    </include>
+      <!-- Collisions -->
+      <collision name="base_link_collision">
+        <pose>0 0 0.12 0 0 0</pose>
+        <geometry><box><size>0.9874 0.5709 0.05</size></box></geometry>
+      </collision>
+      <collision name="base_link_collision_bottom">
+        <pose>0 0 0.046 0 0 0</pose>
+        <geometry><box><size>0.80 0.5709 0.095</size></box></geometry>
+      </collision>
+      <collision name="base_link_collision_1">
+        <pose>0 0 0.185625 0 0 0</pose>
+        <geometry><box><size>0.78992 0.5709 0.12375</size></box></geometry>
+      </collision>
+      <collision name="base_link_fixed_joint_lump__camera_camera_link_collision_1">
+        <pose>0 0 0.05 0 0 0</pose>
+        <geometry><box><size>0.0078 0.13 0.0192</size></box></geometry>
+        <surface>
+          <contact><ode><kp>1e+13</kp><kd>1</kd></ode></contact>
+          <friction><ode><mu2>1</mu2><fdir1>0 0 0</fdir1></ode></friction>
+        </surface>
+      </collision>
+      <collision name="base_link_fixed_joint_lump__camera_camera_link_collision_2">
+        <pose>0.478 0 0.285 0 0 0</pose>
+        <geometry><box><size>0.0078 0.13 0.0192</size></box></geometry>
+        <surface>
+          <contact><ode><kp>1e+13</kp><kd>1</kd></ode></contact>
+          <friction><ode><mu2>1</mu2><fdir1>0 0 0</fdir1></ode></friction>
+        </surface>
+      </collision>
+      <collision name="base_link_fixed_joint_lump__camera_camera_link_collision_3">
+        <pose>0.473 0 0.260 0 0.5236 0</pose>
+        <geometry><box><size>0.0078 0.13 0.0192</size></box></geometry>
+        <surface>
+          <contact><ode><kp>1e+13</kp><kd>1</kd></ode></contact>
+          <friction><ode><mu2>1</mu2><fdir1>0 0 0</fdir1></ode></friction>
+        </surface>
+      </collision>
+      <collision name="base_link_fixed_joint_lump__velodyne_base_link_collision_6">
+        <pose>0.424 0 0.327 0 0 0</pose>
+        <geometry><cylinder><length>0.0717</length><radius>0.0516</radius></cylinder></geometry>
+      </collision>
+      <collision name="base_link_fixed_joint_lump__velodyne_gimbal_plate_base_link_collision_7">
+        <pose>0.424 0 0.400 0 0 0</pose>
+        <geometry><box><size>0.1 0.1 0.01</size></box></geometry>
+      </collision>
+      <collision name="base_link_fixed_joint_lump__sensor_tower_8">
+        <pose>0.374 0 0.215 0 0 0</pose>
+        <geometry><box><size>0.2 0.25 0.225</size></box></geometry>
+      </collision>
+      <collision name="base_link_fixed_joint_lump__landing_pad_9">
+        <pose>0.0 0 0.155 0 0 0</pose>
+        <geometry><box><size>0.500 0.385 0.155</size></box></geometry>
+      </collision>
 
-    <!-- Rigid mount between Husky and Panda -->
-    <joint name="husky_to_panda" type="fixed">
-      <parent>husky::base_link</parent>
-      <child>panda::panda_link0</child>
+      <!-- Visuals -->
+      <visual name="base_link_visual">
+        <pose>0 0 0 0 0 0</pose>
+        <geometry><mesh><scale>1 1 1</scale><uri>meshes/base_link.dae</uri></mesh></geometry>
+      </visual>
+      <visual name="base_link_fixed_joint_lump__camera_camera_link_visual_1">
+        <pose>0.478 0 0.260 0 0.5236 0</pose>
+        <geometry><mesh><uri>meshes/realsense.dae</uri></mesh></geometry>
+      </visual>
+      <visual name="base_link_fixed_joint_lump__camera_camera_link_visual_2">
+        <pose>0.478 0 0.285 0 0 0</pose>
+        <geometry><mesh><uri>meshes/realsense.dae</uri></mesh></geometry>
+      </visual>
+      <visual name="base_link_fixed_joint_lump__top_chassis_link_visual_5">
+        <pose>0 0 0 0 0 0</pose>
+        <geometry><mesh><scale>1 1 1</scale><uri>meshes/top_chassis.dae</uri></mesh></geometry>
+      </visual>
+      <visual name="base_link_fixed_joint_lump__velodyne_base_link_visual_10">
+        <pose>0.424 0 0.327 0 0 0</pose>
+        <geometry><mesh><scale>1 1 1</scale><uri>meshes/VLP16_base_1.dae</uri></mesh></geometry>
+      </visual>
+      <visual name="base_link_fixed_joint_lump__velodyne_base_link_visual_11">
+        <pose>0.424 0 0.327 0 0 0</pose>
+        <geometry><mesh><scale>1 1 1</scale><uri>meshes/VLP16_base_2.dae</uri></mesh></geometry>
+      </visual>
+      <visual name="base_link_fixed_joint_lump__velodyne_visual_12">
+        <pose>0.424 0 0.327 0 0 0</pose>
+        <geometry><mesh><scale>1 1 1</scale><uri>meshes/VLP16_scan.dae</uri></mesh></geometry>
+      </visual>
+      <visual name="base_link_fixed_joint_lump__user_rail_link_visual_13">
+        <pose>0.272 0 0.245 0 0 0</pose>
+        <geometry><mesh><scale>1 1 1</scale><uri>meshes/user_rail.dae</uri></mesh></geometry>
+      </visual>
+      <visual name="base_link_fixed_joint_lump__planar_lidar_link_visual_14">
+        <pose>0.474 0 0.127 0 0 0</pose>
+        <geometry><cylinder><radius>0.045</radius><length>0.05</length></cylinder></geometry>
+      </visual>
+      <visual name="base_link_fixed_joint_lump__velodyne_gimbal_plate_15">
+        <pose>0.424 0 0.400 0 0 0</pose>
+        <geometry><box><size>0.06 0.06 0.01</size></box></geometry>
+      </visual>
+      <visual name="base_link_fixed_joint_lump__sensor_tower_16">
+        <pose>0.374 0 0.215 0 0 0</pose>
+        <geometry><box><size>0.2 0.25 0.225</size></box></geometry>
+      </visual>
+      <visual name="base_link_fixed_joint_lump__landing_pad_17">
+        <pose>0.0 0 0.155 0 0 0</pose>
+        <geometry><box><size>0.500 0.385 0.155</size></box></geometry>
+      </visual>
+
+      <!-- Sensors on base_link -->
+      <sensor name="camera_front" type="rgbd_camera">
+        <topic>camera_front</topic>
+        <camera name="camera_front">
+          <horizontal_fov>1.5184</horizontal_fov>
+          <lens>
+            <intrinsics>
+              <fx>168.61097</fx><fy>168.61097</fy>
+              <cx>160.5</cx><cy>120.5</cy><s>0</s>
+            </intrinsics>
+          </lens>
+          <distortion><k1>0</k1><k2>0</k2><k3>0</k3><p1>0</p1><p2>0</p2><center>0.5 0.5</center></distortion>
+          <image><width>640</width><height>480</height><format>R8G8B8</format></image>
+          <clip><near>0.01</near><far>300</far></clip>
+          <depth_camera><clip><near>0.1</near><far>10</far></clip></depth_camera>
+          <noise><type>gaussian</type><mean>0</mean><stddev>0.007</stddev></noise>
+        </camera>
+        <always_on>1</always_on><update_rate>30</update_rate><visualize>0</visualize>
+        <pose>0.468 0 0.360 0 0 0</pose>
+      </sensor>
+
+      <sensor name="camera_down" type="rgbd_camera">
+        <topic>camera_down</topic>
+        <camera name="camera_down">
+          <horizontal_fov>1.5184</horizontal_fov>
+          <lens>
+            <intrinsics>
+              <fx>168.61097</fx><fy>168.61097</fy>
+              <cx>160.5</cx><cy>120.5</cy><s>0</s>
+            </intrinsics>
+          </lens>
+          <distortion><k1>0</k1><k2>0</k2><k3>0</k3><p1>0</p1><p2>0</p2><center>0.5 0.5</center></distortion>
+          <image><width>640</width><height>480</height><format>R8G8B8</format></image>
+          <clip><near>0.01</near><far>300</far></clip>
+          <depth_camera><clip><near>0.1</near><far>10</far></clip></depth_camera>
+          <noise><type>gaussian</type><mean>0</mean><stddev>0.007</stddev></noise>
+        </camera>
+        <always_on>1</always_on><update_rate>30</update_rate><visualize>0</visualize>
+        <pose>0.468 0 0.335 0 0.5236 0</pose>
+      </sensor>
+
+      <sensor name="planar_laser" type="gpu_ray">
+        <topic>planar_laser</topic>
+        <pose>0.474 0 0.127 0 0 0</pose>
+        <update_rate>10</update_rate>
+        <lidar>
+          <scan>
+            <horizontal>
+              <samples>1600</samples>
+              <resolution>1</resolution>
+              <min_angle>-3.14159</min_angle>
+              <max_angle>3.14159</max_angle>
+            </horizontal>
+          </scan>
+          <range><min>0.95</min><max>25.0</max><resolution>0.01</resolution></range>
+          <noise><type>gaussian</type><mean>0</mean><stddev>0.01</stddev></noise>
+        </lidar>
+      </sensor>
+
+      <sensor name="front_laser" type="gpu_lidar">
+        <topic>front_laser</topic>
+        <visualize>0</visualize>
+        <update_rate>20</update_rate>
+        <lidar>
+          <scan>
+            <horizontal>
+              <samples>1024</samples><resolution>1</resolution>
+              <min_angle>-3.14159</min_angle><max_angle>3.14159</max_angle>
+            </horizontal>
+            <vertical>
+              <samples>64</samples><resolution>1</resolution>
+              <min_angle>-0.2897</min_angle><max_angle>0.2897</max_angle>
+            </vertical>
+          </scan>
+          <range><min>0.8</min><max>120</max><resolution>0.003</resolution></range>
+          <noise><type>gaussian</type><mean>0</mean><stddev>0.03</stddev></noise>
+        </lidar>
+        <pose>0.424 0 0.387 0 0 0</pose>
+      </sensor>
+
+      <sensor name="imu_sensor" type="imu">
+        <topic>imu_sensor</topic>
+        <always_on>1</always_on>
+        <update_rate>50</update_rate>
+        <imu>
+          <enable_orientation>1</enable_orientation>
+          <angular_velocity>
+            <x><noise type="gaussian"><mean>0</mean><stddev>0.009</stddev><bias_mean>0.00075</bias_mean><bias_stddev>0.005</bias_stddev><dynamic_bias_stddev>0.00002</dynamic_bias_stddev><dynamic_bias_correlation_time>400.0</dynamic_bias_correlation_time><precision>0.00025</precision></noise></x>
+            <y><noise type="gaussian"><mean>0</mean><stddev>0.009</stddev><bias_mean>0.00075</bias_mean><bias_stddev>0.005</bias_stddev><dynamic_bias_stddev>0.00002</dynamic_bias_stddev><dynamic_bias_correlation_time>400.0</dynamic_bias_correlation_time><precision>0.00025</precision></noise></y>
+            <z><noise type="gaussian"><mean>0</mean><stddev>0.009</stddev><bias_mean>0.00075</bias_mean><bias_stddev>0.005</bias_stddev><dynamic_bias_stddev>0.00002</dynamic_bias_stddev><dynamic_bias_correlation_time>400.0</dynamic_bias_correlation_time><precision>0.00025</precision></noise></z>
+          </angular_velocity>
+          <linear_acceleration>
+            <x><noise type="gaussian"><mean>0</mean><stddev>0.021</stddev><bias_mean>0.05</bias_mean><bias_stddev>0.0075</bias_stddev><dynamic_bias_stddev>0.000375</dynamic_bias_stddev><dynamic_bias_correlation_time>175.0</dynamic_bias_correlation_time><precision>0.005</precision></noise></x>
+            <y><noise type="gaussian"><mean>0</mean><stddev>0.021</stddev><bias_mean>0.05</bias_mean><bias_stddev>0.0075</bias_stddev><dynamic_bias_stddev>0.000375</dynamic_bias_stddev><dynamic_bias_correlation_time>175.0</dynamic_bias_correlation_time><precision>0.005</precision></noise></y>
+            <z><noise type="gaussian"><mean>0</mean><stddev>0.021</stddev><bias_mean>0.05</bias_mean><bias_stddev>0.0075</bias_stddev><dynamic_bias_stddev>0.000375</dynamic_bias_stddev><dynamic_bias_correlation_time>175.0</dynamic_bias_correlation_time><precision>0.005</precision></noise></z>
+          </linear_acceleration>
+        </imu>
+      </sensor>
+    </link>
+
+    <!-- Wheels -->
+    <link name="front_left_wheel_link">
+      <pose>0.256 0.2854 0.03282 0 0 0</pose>
+      <inertial><pose>0 0 0 0 0 0</pose><mass>2.637</mass>
+        <inertia><ixx>0.02467</ixx><ixy>0</ixy><ixz>0</ixz><iyy>0.04411</iyy><iyz>0</iyz><izz>0.02467</izz></inertia>
+      </inertial>
+      <collision name="front_left_wheel_link_collision">
+        <pose>0 0 0 1.5707963267948966 0 0</pose>
+        <geometry><cylinder><length>0.1143</length><radius>0.1651</radius></cylinder></geometry>
+        <surface>
+          <contact><ode><kp>1e+07</kp><kd>1</kd></ode></contact>
+          <friction><ode><mu>0.5</mu><mu2>1</mu2><slip1>0.00062</slip1><slip2>0</slip2><fdir1>0 0 1</fdir1></ode></friction>
+        </surface>
+      </collision>
+      <visual name="front_left_wheel_link_visual">
+        <geometry><mesh><scale>1 1 1</scale><uri>meshes/wheel.dae</uri></mesh></geometry>
+      </visual>
+    </link>
+    <joint name="front_left_wheel_joint" type="revolute">
+      <child>front_left_wheel_link</child>
+      <parent>base_link</parent>
+      <axis>
+        <xyz expressed_in="base_link">0 1 0</xyz>
+        <limit><lower>-1e+16</lower><upper>1e+16</upper></limit>
+        <dynamics><spring_reference>0</spring_reference><spring_stiffness>0</spring_stiffness></dynamics>
+      </axis>
     </joint>
+
+    <link name="front_right_wheel_link">
+      <pose>0.256 -0.2854 0.03282 0 0 0</pose>
+      <inertial><pose>0 0 0 0 0 0</pose><mass>2.637</mass>
+        <inertia><ixx>0.02467</ixx><ixy>0</ixy><ixz>0</ixz><iyy>0.04411</iyy><iyz>0</iyz><izz>0.02467</izz></inertia>
+      </inertial>
+      <collision name="front_right_wheel_link_collision">
+        <pose>0 0 0 1.5707963267948966 0 0</pose>
+        <geometry><cylinder><length>0.1143</length><radius>0.1651</radius></cylinder></geometry>
+        <surface>
+          <contact><ode><kp>1e+07</kp><kd>1</kd></ode></contact>
+          <friction><ode><mu>0.5</mu><mu2>1</mu2><slip1>0.00062</slip1><slip2>0</slip2><fdir1>0 0 1</fdir1></ode></friction>
+        </surface>
+      </collision>
+      <visual name="front_right_wheel_link_visual">
+        <geometry><mesh><scale>1 1 1</scale><uri>meshes/wheel.dae</uri></mesh></geometry>
+      </visual>
+    </link>
+    <joint name="front_right_wheel_joint" type="revolute">
+      <child>front_right_wheel_link</child>
+      <parent>base_link</parent>
+      <axis>
+        <xyz expressed_in="base_link">0 1 0</xyz>
+        <limit><lower>-1e+16</lower><upper>1e+16</upper></limit>
+        <dynamics><spring_reference>0</spring_reference><spring_stiffness>0</spring_stiffness></dynamics>
+      </axis>
+    </joint>
+
+    <link name="rear_left_wheel_link">
+      <pose>-0.256 0.2854 0.03282 0 0 0</pose>
+      <inertial><pose>0 0 0 0 0 0</pose><mass>2.637</mass>
+        <inertia><ixx>0.02467</ixx><ixy>0</ixy><ixz>0</ixz><iyy>0.04411</iyy><iyz>0</iyz><izz>0.02467</izz></inertia>
+      </inertial>
+      <collision name="rear_left_wheel_link_collision">
+        <pose>0 0 0 1.5707963267948966 0 0</pose>
+        <geometry><cylinder><length>0.1143</length><radius>0.1651</radius></cylinder></geometry>
+        <surface>
+          <contact><ode><kp>1e+07</kp><kd>1</kd></ode></contact>
+          <friction><ode><mu>0.5</mu><mu2>1</mu2><slip1>0.00062</slip1><slip2>0</slip2><fdir1>0 0 1</fdir1></ode></friction>
+        </surface>
+      </collision>
+      <visual name="rear_left_wheel_link_visual">
+        <geometry><mesh><scale>1 1 1</scale><uri>meshes/wheel.dae</uri></mesh></geometry>
+      </visual>
+    </link>
+    <joint name="rear_left_wheel_joint" type="revolute">
+      <child>rear_left_wheel_link</child>
+      <parent>base_link</parent>
+      <axis>
+        <xyz expressed_in="base_link">0 1 0</xyz>
+        <limit><lower>-1e+16</lower><upper>1e+16</upper></limit>
+        <dynamics><spring_reference>0</spring_reference><spring_stiffness>0</spring_stiffness></dynamics>
+      </axis>
+    </joint>
+
+    <link name="rear_right_wheel_link">
+      <pose>-0.256 -0.2854 0.03282 0 0 0</pose>
+      <inertial><pose>0 0 0 0 0 0</pose><mass>2.637</mass>
+        <inertia><ixx>0.02467</ixx><ixy>0</ixy><ixz>0</ixz><iyy>0.04411</iyy><iyz>0</iyz><izz>0.02467</izz></inertia>
+      </inertial>
+      <collision name="rear_right_wheel_link_collision">
+        <pose>0 0 0 1.5707963267948966 0 0</pose>
+        <geometry><cylinder><length>0.1143</length><radius>0.1651</radius></cylinder></geometry>
+        <surface>
+          <contact><ode><kp>1e+07</kp><kd>1</kd></ode></contact>
+          <friction><ode><mu>0.5</mu><mu2>1</mu2><slip1>0.00062</slip1><slip2>0</slip2><fdir1>0 0 1</fdir1></ode></friction>
+        </surface>
+      </collision>
+      <visual name="rear_right_wheel_link_visual">
+        <geometry><mesh><scale>1 1 1</scale><uri>meshes/wheel.dae</uri></mesh></geometry>
+      </visual>
+    </link>
+    <joint name="rear_right_wheel_joint" type="revolute">
+      <child>rear_right_wheel_link</child>
+      <parent>base_link</parent>
+      <axis>
+        <xyz expressed_in="base_link">0 1 0</xyz>
+        <limit><lower>-1e+16</lower><upper>1e+16</upper></limit>
+        <dynamics><spring_reference>0</spring_reference><spring_stiffness>0</spring_stiffness></dynamics>
+      </axis>
+    </joint>
+
+    <!-- Gimbal links (for pan/tilt camera on Husky) -->
+    <link name="pan_gimbal_link">
+      <pose>0.424 0 0.427 0 0 0</pose>
+      <inertial>
+        <pose>0 0 0 0 0 0</pose>
+        <mass>0.1</mass>
+        <inertia><ixx>0.000016875</ixx><ixy>0</ixy><ixz>0</ixz><iyy>1e-8</iyy><iyz>0</iyz><izz>0.000016875</izz></inertia>
+      </inertial>
+      <collision name="pan_gimbal_link_collision">
+        <pose>0 0 0 0 0 0</pose>
+        <geometry><cylinder><length>0.045</length><radius>0.014</radius></cylinder></geometry>
+        <surface><contact><ode><kp>1e+07</kp><kd>1</kd></ode></contact></surface>
+      </collision>
+      <visual name="pan_gimbal_link_visual">
+        <pose>0 0 0 0 0 0</pose>
+        <geometry><cylinder><length>0.045</length><radius>0.014</radius></cylinder></geometry>
+      </visual>
+    </link>
+
+    <link name="tilt_gimbal_link">
+      <pose>0.424 0 0.460 0 0 0</pose>
+      <inertial>
+        <pose>0 0 0 1.570796 0 0</pose>
+        <mass>0.1</mass>
+        <inertia><ixx>0.000016875</ixx><ixy>0</ixy><ixz>0</ixz><iyy>1e-8</iyy><iyz>0</iyz><izz>0.000016875</izz></inertia>
+      </inertial>
+      <collision name="tilt_gimbal_link_collision">
+        <pose>0 0 0 1.570796 0 0</pose>
+        <geometry><cylinder><length>0.045</length><radius>0.014</radius></cylinder></geometry>
+        <surface><contact><ode><kp>1e+07</kp><kd>1</kd></ode></contact></surface>
+      </collision>
+      <visual name="tilt_gimbal_link_visual">
+        <pose>0 0 0 1.570796 0 0</pose>
+        <geometry><cylinder><length>0.045</length><radius>0.014</radius></cylinder></geometry>
+      </visual>
+
+      <!-- Pan/tilt RGBD on gimbal -->
+      <sensor name="camera_pan_tilt" type="rgbd_camera">
+        <topic>camera_pan_tilt</topic>
+        <camera name="camera_pan_tilt">
+          <horizontal_fov>1.5184</horizontal_fov>
+          <lens>
+            <intrinsics>
+              <fx>337.22195</fx><fy>337.22195</fy>
+              <cx>320.5</cx><cy>240.5</cy><s>0</s>
+            </intrinsics>
+          </lens>
+          <distortion><k1>0</k1><k2>0</k2><k3>0</k3><p1>0</p1><p2>0</p2><center>0.5 0.5</center></distortion>
+          <image><width>640</width><height>480</height><format>R8G8B8</format></image>
+          <clip><near>0.01</near><far>300</far></clip>
+          <depth_camera><clip><near>0.1</near><far>10</far></clip></depth_camera>
+          <noise><type>gaussian</type><mean>0</mean><stddev>0.007</stddev></noise>
+        </camera>
+        <always_on>1</always_on><update_rate>30</update_rate><visualize>0</visualize>
+        <pose>0 0 0.03 0 0 0</pose>
+      </sensor>
+
+      <visual name="tilt_gimbal_link_fixed_joint_lump__camera_camera_link_visual_0">
+        <pose>0 0 0.03 0 0 0</pose>
+        <geometry><mesh><uri>meshes/realsense.dae</uri></mesh></geometry>
+      </visual>
+      <visual name="tilt_gimbal_link_fixed_joint_lump_bot_camera_plate_link_visual_1">
+        <pose>0 0 0.017 0 0 0</pose>
+        <geometry><box><size>0.025 0.13 0.007</size></box></geometry>
+      </visual>
+      <visual name="tilt_gimbal_link_fixed_joint_lump_bot_camera_plate_link_visual_2">
+        <pose>0 0 0.042 0 0 0</pose>
+        <geometry><box><size>0.025 0.13 0.007</size></box></geometry>
+      </visual>
+
+      <light name="flashlight_flashlight_light_source_lamp_light" type="spot">
+        <pose>0 0 0.065 3.141592653589793 1.5707963267948966 -0.0015926535897931</pose>
+        <attenuation><range>50</range><linear>0</linear><constant>0.1</constant><quadratic>0.0025</quadratic></attenuation>
+        <diffuse>0.8 0.8 0.5 1</diffuse>
+        <specular>0.8 0.8 0.5 1</specular>
+        <spot><inner_angle>2.8</inner_angle><outer_angle>2.9</outer_angle><falloff>1</falloff></spot>
+        <direction>0 0 -1</direction>
+      </light>
+      <visual name="flashlight_flashlight_light_source_lamp_viz_visual">
+        <pose>0 0 0.065 3.141592653589793 1.5707963267948966 -0.0015926535897931</pose>
+        <geometry><cylinder><radius>0.019</radius><length>0.005</length></cylinder></geometry>
+        <material><ambient>1 1 1 1</ambient><diffuse>1 1 1 1</diffuse><specular>1 1 1 1</specular><emissive>1 1 1 1</emissive></material>
+      </visual>
+    </link>
+
+    <joint name="pan_gimbal_joint" type="revolute">
+      <child>pan_gimbal_link</child>
+      <parent>base_link</parent>
+      <axis>
+        <xyz expressed_in="base_link">0 0 1</xyz>
+        <limit><lower>-1e+16</lower><upper>1e+16</upper><effort>10</effort></limit>
+        <dynamics><spring_reference>0</spring_reference><spring_stiffness>0</spring_stiffness><damping>0.5</damping></dynamics>
+      </axis>
+    </joint>
+    <joint name="tilt_gimbal_joint" type="revolute">
+      <child>tilt_gimbal_link</child>
+      <parent>pan_gimbal_link</parent>
+      <axis>
+        <xyz expressed_in="pan_gimbal_link">0 1 0</xyz>
+        <limit><lower>-1.5708</lower><upper>1.5708</upper><effort>10</effort></limit>
+        <dynamics><spring_reference>0</spring_reference><spring_stiffness>0</spring_stiffness><damping>0.5</damping></dynamics>
+      </axis>
+    </joint>
+
+
+    <!-- =========================================================
+         PANDA ARM (flattened)
+         ========================================================= -->
+    <link name="panda_link0">
+      <visual name="panda_link0_visual">
+        <geometry><mesh><uri>meshes/visual/link0.dae</uri></mesh></geometry>
+      </visual>
+      <collision name="panda_link0_collision">
+        <geometry><mesh><uri>meshes/collision/link0.stl</uri></mesh></geometry>
+        <surface><friction><ode><mu>1.05</mu><mu2>1.05</mu2></ode></friction></surface>
+      </collision>
+      <inertial>
+        <pose>-0.025566 -2.87883e-05 0.057332 0 0 0</pose>
+        <mass>2.814271300104062</mass>
+        <inertia>
+          <ixx>0.0075390636364814695</ixx>
+          <iyy>0.010508017427382959</iyy>
+          <izz>0.009864933638708275</izz>
+          <ixy>-1.5053124574783335e-05</ixy>
+          <ixz>-0.0012144328835738973</ixz>
+          <iyz>1.0434803501032979e-05</iyz>
+        </inertia>
+      </inertial>
+    </link>
+
+    <link name="panda_link1">
+      <pose relative_to="panda_joint1">0 0 0 0 0 0</pose>
+      <visual name="panda_link1_visual"><geometry><mesh><uri>meshes/visual/link1.dae</uri></mesh></geometry></visual>
+      <collision name="panda_link1_collision"><geometry><mesh><uri>meshes/collision/link1.stl</uri></mesh></geometry><surface><friction><ode><mu>1.05</mu><mu2>1.05</mu2></ode></friction></surface></collision>
+      <inertial><pose>-3.72212e-09 -0.0324958 -0.0675818 0 0 0</pose><mass>2.6433170427227215</mass>
+        <inertia><ixx>0.017405076982879724</ixx><iyy>0.015352077935781732</iyy><izz>0.005987891663073857</izz><ixy>-8.687986369621078e-09</ixy><ixz>-1.6277819062920423e-08</ixz><iyz>0.004510855959102245</iyz></inertia>
+      </inertial>
+    </link>
+
+    <link name="panda_link2">
+      <pose relative_to="panda_joint2">0 0 0 0 0 0</pose>
+      <visual name="panda_link2_visual"><geometry><mesh><uri>meshes/visual/link2.dae</uri></mesh></geometry></visual>
+      <collision name="panda_link2_collision"><geometry><mesh><uri>meshes/collision/link2.stl</uri></mesh></geometry><surface><friction><ode><mu>1.05</mu><mu2>1.05</mu2></ode></friction></surface></collision>
+      <inertial><pose>3.17833e-07 -0.06861 0.0322285 0 0 0</pose><mass>2.6652755331661186</mass>
+        <inertia><ixx>0.01778694005635383</ixx><iyy>0.006044133867952844</iyy><izz>0.01571095500455695</izz><ixy>8.70635625879119e-08</ixy><ixz>3.752072058394008e-08</ixz><iyz>-0.004599490295490376</iyz></inertia>
+      </inertial>
+    </link>
+
+    <link name="panda_link3">
+      <pose relative_to="panda_joint3">0 0 0 0 0 0</pose>
+      <visual name="panda_link3_visual"><geometry><mesh><uri>meshes/visual/link3.dae</uri></mesh></geometry></visual>
+      <collision name="panda_link3_collision"><geometry><mesh><uri>meshes/collision/link3.stl</uri></mesh></geometry><surface><friction><ode><mu>1.05</mu><mu2>1.05</mu2></ode></friction></surface></collision>
+      <inertial><pose>0.0469893 0.0316374 -0.031704 0 0 0</pose><mass>2.3293714829045733</mass>
+        <inertia><ixx>0.0075496764161139766</ixx><iyy>0.009680676080191398</iyy><izz>0.007944557422008086</izz><ixy>-0.0024320464513492225</ixy><ixz>-0.003250815048103007</ixz><iyz>-0.0021316282421730694</iyz></inertia>
+      </inertial>
+    </link>
+
+    <link name="panda_link4">
+      <pose relative_to="panda_joint4">0 0 0 0 0 0</pose>
+      <visual name="panda_link4_visual"><geometry><mesh><uri>meshes/visual/link4.dae</uri></mesh></geometry></visual>
+      <collision name="panda_link4_collision"><geometry><mesh><uri>meshes/collision/link4.stl</uri></mesh></geometry><surface><friction><ode><mu>1.05</mu><mu2>1.05</mu2></ode></friction></surface></collision>
+      <inertial><pose>-0.0360505 0.0337069 0.0319019 0 0 0</pose><mass>2.3104763646281508</mass>
+        <inertia><ixx>0.007764568814864828</ixx><iyy>0.008015776929980149</iyy><izz>0.009955882308071066</izz><ixy>0.003371475204045935</ixy><ixz>-0.002343621113168248</ixz><iyz>0.0022917526161470624</iyz></inertia>
+      </inertial>
+    </link>
+
+    <link name="panda_link5">
+      <pose relative_to="panda_joint5">0 0 0 0 0 0</pose>
+      <visual name="panda_link5_visual"><geometry><mesh><uri>meshes/visual/link5.dae</uri></mesh></geometry></visual>
+      <collision name="panda_link5_collision"><geometry><mesh><uri>meshes/collision/link5.stl</uri></mesh></geometry><surface><friction><ode><mu>1.05</mu><mu2>1.05</mu2></ode></friction></surface></collision>
+      <inertial><pose>-6.12525e-06 0.0610427 -0.104176 0 0 0</pose><mass>2.6226426154892004</mass>
+        <inertia><ixx>0.029070538014399377</ixx><iyy>0.027638529986528795</iyy><izz>0.004251111234400737</izz><ixy>6.208738268725568e-07</ixy><ixz>-1.0059151925023392e-05</ixz><iyz>-0.007424306477850814</iyz></inertia>
+      </inertial>
+    </link>
+
+    <link name="panda_link6">
+      <pose relative_to="panda_joint6">0 0 0 0 0 0</pose>
+      <visual name="panda_link6_visual"><geometry><mesh><uri>meshes/visual/link6.dae</uri></mesh></geometry></visual>
+      <collision name="panda_link6_collision"><geometry><mesh><uri>meshes/collision/link6.stl</uri></mesh></geometry><surface><friction><ode><mu>1.05</mu><mu2>1.05</mu2></ode></friction></surface></collision>
+      <inertial><pose>0.051051 0.00910797 0.0106343 0 0 0</pose><mass>1.5025804886626795</mass>
+        <inertia><ixx>0.002940555801469018</ixx><iyy>0.00392105201248677</iyy><izz>0.0054115603870960195</izz><ixy>-0.00042391108351381507</ixy><ixz>0.000610007735338717</ixz><iyz>0.00012647545430836214</iyz></inertia>
+      </inertial>
+    </link>
+
+    <link name="panda_link7">
+      <pose relative_to="panda_joint7">0 0 0 0 0 0</pose>
+      <visual name="panda_link7_visual"><geometry><mesh><uri>meshes/visual/link7.dae</uri></mesh></geometry></visual>
+      <collision name="panda_link7_collision"><geometry><mesh><uri>meshes/collision/link7.stl</uri></mesh></geometry><surface><friction><ode><mu>1.05</mu><mu2>1.05</mu2></ode></friction></surface></collision>
+      <inertial><pose>0.0109695 0.0107965 0.0650412 0 0 0</pose><mass>0.5237668134788256</mass>
+        <inertia><ixx>0.0008621467959726535</ixx><iyy>0.0008613100184801048</iyy><izz>0.0006961139396618219</izz><ixy>-0.00011871071570425467</ixy><ixz>3.866602604509339e-05</ixz><iyz>-9.057841649422724e-05</iyz></inertia>
+      </inertial>
+
+      <!-- Hand on link7 -->
+      <collision name="panda_link7_fixed_joint_lump__panda_hand_collision_1">
+        <pose>0 0 0.107 0 0 -0.7853981633974483</pose>
+        <geometry><mesh><uri>meshes/collision/hand.stl</uri><scale>1 1 1</scale></mesh></geometry>
+        <surface><friction><ode><mu>1.05</mu><mu2>1.05</mu2></ode></friction></surface>
+      </collision>
+      <visual name="panda_link7_fixed_joint_lump__panda_hand_visual_1">
+        <pose>0 0 0.107 0 0 -0.7853981633974483</pose>
+        <geometry><mesh><uri>meshes/visual/hand.dae</uri><scale>1 1 1</scale></mesh></geometry>
+      </visual>
+    </link>
+
+    <!-- Gripper camera mount -->
+    <joint name="gripper_cam_mount" type="fixed">
+      <parent>panda_link7</parent>
+      <child>gripper_cam_link</child>
+      <pose relative_to="gripper_mount">0 0 0 0 0 0</pose>
+    </joint>
+    <link name="gripper_cam_link">
+      <pose relative_to="gripper_cam_mount">0 0 0.05 0 0 0</pose>
+      <inertial>
+        <mass>0.08</mass>
+        <inertia><ixx>1.8e-4</ixx><iyy>5.0e-5</iyy><izz>1.8e-4</izz><ixy>0</ixy><ixz>0</ixz><iyz>0</iyz></inertia>
+      </inertial>
+      <visual name="realsense_d415_vis">
+        <pose>0 -0.02 0 1.57079632679 0 1.57079632679</pose>
+        <geometry><mesh><uri>meshes/d435.dae</uri><scale>0.001 0.001 0.001</scale></mesh></geometry>
+      </visual>
+      <collision name="realsense_d415_col">
+        <pose>-0.0125 -0.02 0 0 0 0</pose>
+        <geometry><box><size>0.02005 0.099 0.023</size></box></geometry>
+      </collision>
+      <sensor name="gripper_rgbd" type="rgbd_camera">
+        <pose>0.015 0 0 0 -1.57079632679 0</pose>
+        <update_rate>30</update_rate>
+        <always_on>true</always_on>
+        <visualize>true</visualize>
+        <camera>
+          <horizontal_fov>1.0471975512</horizontal_fov>
+          <image><width>640</width><height>480</height><format>R8G8B8</format></image>
+          <clip><near>0.10</near><far>5.0</far></clip>
+        </camera>
+        <!-- GZ base topic; bridge will append /image, /depth_image, /camera_info, /points -->
+        <topic>/panda/gripper/rgbd</topic>
+      </sensor>
+    </link>
+
+    <!-- Optical-frame helper (optional, uncomment if you want ROS optical frame) -->
+    <!--
+    <frame name="gripper_cam_optical_frame" attached_to="gripper_cam_link">
+      <pose>0 0 0 -1.57079632679 0 -1.57079632679</pose>
+    </frame>
+    -->
+
+    <!-- Gripper frame for mounting -->
+    <frame name="gripper_mount" attached_to="panda_link7">
+      <pose>0 0 0.107 0 0 -0.7853981633974483</pose>
+    </frame>
+
+    <!-- Panda joints -->
+    <joint name="panda_joint1" type="revolute">
+      <pose relative_to="panda_link0">0 0 0.333 0 0 0</pose>
+      <parent>panda_link0</parent><child>panda_link1</child>
+      <axis>
+        <xyz>0 0 1</xyz>
+        <limit><effort>87</effort><lower>-2.897246558310587</lower><upper>2.897246558310587</upper><velocity>2.617993877991494</velocity></limit>
+        <dynamics><spring_reference>0</spring_reference><spring_stiffness>0</spring_stiffness><damping>21.75</damping><friction>3.48</friction></dynamics>
+      </axis>
+    </joint>
+    <joint name="panda_joint2" type="revolute">
+      <pose relative_to="panda_link1">0 0 0 -1.570796326794897 0 0</pose>
+      <parent>panda_link1</parent><child>panda_link2</child>
+      <axis>
+        <xyz>0 0 1</xyz>
+        <limit><effort>87</effort><lower>-1.762782544514273</lower><upper>1.762782544514273</upper><velocity>2.617993877991494</velocity></limit>
+        <dynamics><spring_reference>0</spring_reference><spring_stiffness>0</spring_stiffness><damping>21.75</damping><friction>3.48</friction></dynamics>
+      </axis>
+    </joint>
+    <joint name="panda_joint3" type="revolute">
+      <pose relative_to="panda_link2">0 -0.316 0 1.570796326794897 0 0</pose>
+      <parent>panda_link2</parent><child>panda_link3</child>
+      <axis>
+        <xyz>0 0 1</xyz>
+        <limit><effort>87</effort><lower>-2.897246558310587</lower><upper>2.897246558310587</upper><velocity>2.617993877991494</velocity></limit>
+        <dynamics><spring_reference>0</spring_reference><spring_stiffness>0</spring_stiffness><damping>21.75</damping><friction>3.48</friction></dynamics>
+      </axis>
+    </joint>
+    <joint name="panda_joint4" type="revolute">
+      <pose relative_to="panda_link3">0.0825 0 0 1.570796326794897 0 0</pose>
+      <parent>panda_link3</parent><child>panda_link4</child>
+      <axis>
+        <xyz>0 0 1</xyz>
+        <limit><effort>87</effort><lower>-3.07177948351002</lower><upper>-0.06981317007977318</upper><velocity>2.617993877991494</velocity></limit>
+        <dynamics><spring_reference>0</spring_reference><spring_stiffness>0</spring_stiffness><damping>21.75</damping><friction>3.48</friction></dynamics>
+      </axis>
+    </joint>
+    <joint name="panda_joint5" type="revolute">
+      <pose relative_to="panda_link4">-0.0825 0.384 0 -1.570796326794897 0 0</pose>
+      <parent>panda_link4</parent><child>panda_link5</child>
+      <axis>
+        <xyz>0 0 1</xyz>
+        <limit><effort>12</effort><lower>-2.897246558310587</lower><upper>2.897246558310587</upper><velocity>3.141592653589793</velocity></limit>
+        <dynamics><spring_reference>0</spring_reference><spring_stiffness>0</spring_stiffness><damping>3.0</damping><friction>0.48</friction></dynamics>
+      </axis>
+    </joint>
+    <joint name="panda_joint6" type="revolute">
+      <pose relative_to="panda_link5">0 0 0 1.570796326794897 0 0</pose>
+      <parent>panda_link5</parent><child>panda_link6</child>
+      <axis>
+        <xyz>0 0 1</xyz>
+        <limit><effort>12</effort><lower>-0.0174532925199433</lower><upper>3.752457891787809</upper><velocity>3.141592653589793</velocity></limit>
+        <dynamics><spring_reference>0</spring_reference><spring_stiffness>0</spring_stiffness><damping>3.0</damping><friction>0.48</friction></dynamics>
+      </axis>
+    </joint>
+    <joint name="panda_joint7" type="revolute">
+      <pose relative_to="panda_link6">0.088 0 0 1.570796326794897 -0.8 0</pose>
+      <parent>panda_link6</parent><child>panda_link7</child>
+      <axis>
+        <xyz>0 0 1</xyz>
+        <limit><effort>12</effort><lower>-2.897246558310587</lower><upper>2.897246558310587</upper><velocity>3.141592653589793</velocity></limit>
+        <dynamics><spring_reference>0</spring_reference><spring_stiffness>0</spring_stiffness><damping>3.0</damping><friction>0.4</friction></dynamics>
+      </axis>
+    </joint>
+
+    <joint name="panda_finger_joint1" type="prismatic">
+      <pose relative_to="panda_link7">0 0 0.1654 0 0 -0.7853981633974483</pose>
+      <parent>panda_link7</parent><child>panda_leftfinger</child>
+      <axis>
+        <xyz>0 1 0</xyz>
+        <limit><effort>12</effort><lower>-2.897246558310587</lower><upper>2.897246558310587</upper><velocity>3.141592653589793</velocity></limit>
+        <dynamics><damping>3.0</damping><friction>0.4</friction></dynamics>
+      </axis>
+    </joint>
+    <joint name="panda_finger_joint2" type="prismatic">
+      <pose relative_to="panda_link7">0 0 0.1654 0 0 -0.7853981633974483</pose>
+      <parent>panda_link7</parent><child>panda_rightfinger</child>
+      <axis>
+        <xyz>0 -1 0</xyz>
+        <limit><lower>0.0</lower><upper>0.04</upper><effort>20</effort><velocity>0.2</velocity></limit>
+        <dynamics><damping>3.0</damping><friction>0.4</friction></dynamics>
+      </axis>
+    </joint>
+
+    <!-- Finger links -->
+    <link name="panda_leftfinger">
+      <pose relative_to="panda_finger_joint1">0 0 0 0 0 0</pose>
+      <visual name="panda_leftfinger_visual"><geometry><mesh><uri>meshes/visual/finger.dae</uri></mesh></geometry></visual>
+      <collision name="panda_leftfinger_collision"><geometry><mesh><uri>meshes/collision/finger.stl</uri></mesh></geometry><surface><friction><ode><mu>1.13</mu><mu2>1.13</mu2></ode></friction></surface></collision>
+      <inertial><pose>-6.2561e-06 0.00227781 -0.0277116 0 0 0</pose><mass>0.2238453537819424</mass>
+        <inertia><ixx>6.7480416736369505e-05</ixx><iyy>6.6271892216413953e-05</iyy><izz>1.550396267804825e-05</izz><ixy>-4.1027443646025684e-09</ixy><ixz>1.8693673970152991e-08</ixz><iyz>1.19675484743908e-05</iyz></inertia>
+      </inertial>
+    </link>
+    <link name="panda_rightfinger">
+      <pose relative_to="panda_finger_joint2">0 0 0 0 0 0</pose>
+      <visual name="panda_rightfinger_visual"><pose>0 0 0 0 0 3.141592653589793</pose><geometry><mesh><uri>meshes/visual/finger.dae</uri></mesh></geometry></visual>
+      <collision name="panda_rightfinger_collision"><pose>0 0 0 0 0 3.141592653589793</pose><geometry><mesh><uri>meshes/collision/finger.stl</uri></mesh></geometry><surface><friction><ode><mu>1.13</mu><mu2>1.13</mu2></ode></friction></surface></collision>
+      <inertial><pose>-6.2561e-06 0.00227781 -0.0277116 0 0 3.141592653589793</pose><mass>0.2238453537819424</mass>
+        <inertia><ixx>6.7480416736369505e-05</ixx><iyy>6.6271892216413953e-05</iyy><izz>1.550396267804825e-05</izz><ixy>-4.1027443646025684e-09</ixy><ixz>1.8693673970152991e-08</ixz><iyz>1.19675484743908e-05</iyz></inertia>
+      </inertial>
+    </link>
+
+    <!-- Panda joint position controllers (GZ Sim) -->
+    <!-- <plugin filename="libgz-sim-joint-position-controller-system.so" name="gz::sim::systems::JointPositionController">
+      <joint_name>panda_joint1</joint_name><p_gain>200</p_gain><d_gain>20</d_gain><i_gain>0</i_gain><i_min>-1</i_min><i_max>1</i_max><cmd_min>-100</cmd_min><cmd_max>100</cmd_max>
+      <topic>/model/panda/joint/panda_joint1/cmd_pos</topic>
+    </plugin>
+    <plugin filename="libgz-sim-joint-position-controller-system.so" name="gz::sim::systems::JointPositionController">
+      <joint_name>panda_joint2</joint_name><p_gain>400</p_gain><d_gain>40</d_gain><i_gain>0</i_gain><i_min>-1</i_min><i_max>1</i_max><cmd_min>-120</cmd_min><cmd_max>120</cmd_max>
+      <topic>/model/panda/joint/panda_joint2/cmd_pos</topic>
+    </plugin>
+    <plugin filename="libgz-sim-joint-position-controller-system.so" name="gz::sim::systems::JointPositionController">
+      <joint_name>panda_joint3</joint_name><p_gain>200</p_gain><d_gain>20</d_gain><i_gain>0</i_gain><i_min>-1</i_min><i_max>1</i_max><cmd_min>-100</cmd_min><cmd_max>100</cmd_max>
+      <topic>/model/panda/joint/panda_joint3/cmd_pos</topic>
+    </plugin>
+    <plugin filename="libgz-sim-joint-position-controller-system.so" name="gz::sim::systems::JointPositionController">
+      <joint_name>panda_joint4</joint_name><p_gain>300</p_gain><d_gain>30</d_gain><i_gain>0</i_gain><i_min>-1</i_min><i_max>1</i_max><cmd_min>-100</cmd_min><cmd_max>100</cmd_max>
+      <topic>/model/panda/joint/panda_joint4/cmd_pos</topic>
+    </plugin>
+    <plugin filename="libgz-sim-joint-position-controller-system.so" name="gz::sim::systems::JointPositionController">
+      <joint_name>panda_joint5</joint_name><p_gain>80</p_gain><d_gain>8</d_gain><i_gain>0</i_gain><i_min>-1</i_min><i_max>1</i_max><cmd_min>-30</cmd_min><cmd_max>30</cmd_max>
+      <topic>/model/panda/joint/panda_joint5/cmd_pos</topic>
+    </plugin>
+    <plugin filename="libgz-sim-joint-position-controller-system.so" name="gz::sim::systems::JointPositionController">
+      <joint_name>panda_joint6</joint_name><p_gain>80</p_gain><d_gain>8</d_gain><i_gain>0</i_gain><i_min>-1</i_min><i_max>1</i_max><cmd_min>-30</cmd_min><cmd_max>30</cmd_max>
+      <topic>/model/panda/joint/panda_joint6/cmd_pos</topic>
+    </plugin>
+    <plugin filename="libgz-sim-joint-position-controller-system.so" name="gz::sim::systems::JointPositionController">
+      <joint_name>panda_joint7</joint_name><p_gain>80</p_gain><d_gain>8</d_gain><i_gain>0</i_gain><i_min>-1</i_min><i_max>1</i_max><cmd_min>-12</cmd_min><cmd_max>12</cmd_max>
+      <topic>/model/panda/joint/panda_joint7/cmd_pos</topic>
+    </plugin>
+    <plugin filename="libgz-sim-joint-position-controller-system.so" name="gz::sim::systems::JointPositionController">
+      <joint_name>panda_finger_joint1</joint_name><p_gain>80</p_gain><d_gain>8</d_gain><i_gain>0</i_gain><i_min>-1</i_min><i_max>1</i_max><cmd_min>-40</cmd_min><cmd_max>40</cmd_max>
+      <topic>/model/panda/joint/panda_finger_joint1/cmd_pos</topic>
+    </plugin>
+    <plugin filename="libgz-sim-joint-position-controller-system.so" name="gz::sim::systems::JointPositionController">
+      <joint_name>panda_finger_joint2</joint_name><p_gain>80</p_gain><d_gain>8</d_gain><i_gain>0</i_gain><i_min>-1</i_min><i_max>1</i_max><cmd_min>-40</cmd_min><cmd_max>40</cmd_max>
+      <topic>/model/panda/joint/panda_finger_joint2/cmd_pos</topic>
+    </plugin> -->
+
+        <!-- Husky plugins -->
+    <!-- <plugin filename="libgz-sim-joint-controller-system.so" name="gz::sim::systems::JointController">
+      <joint_name>pan_gimbal_joint</joint_name>
+      <use_force_commands>true</use_force_commands>
+      <p_gain>0.4</p_gain><i_gain>10</i_gain>
+    </plugin>
+    <plugin filename="libgz-sim-joint-controller-system.so" name="gz::sim::systems::JointController">
+      <joint_name>tilt_gimbal_joint</joint_name>
+      <use_force_commands>true</use_force_commands>
+      <p_gain>0.4</p_gain><i_gain>10</i_gain>
+    </plugin> -->
+
+    <!-- <plugin filename="libgz-sim-diff-drive-system.so" name="gz::sim::systems::DiffDrive">
+      <left_joint>front_left_wheel_joint</left_joint>
+      <left_joint>rear_left_wheel_joint</left_joint>
+      <right_joint>front_right_wheel_joint</right_joint>
+      <right_joint>rear_right_wheel_joint</right_joint>
+      <wheel_radius>0.1651</wheel_radius>
+      <wheel_separation>0.5708</wheel_separation>
+      <topic>cmd_vel</topic>
+      <odom_topic>odom</odom_topic>
+      <frame_id>odom</frame_id>
+      <child_frame_id>base_link</child_frame_id>
+      <max_linear_acceleration>3.0</max_linear_acceleration>
+      <max_angular_acceleration>6.0</max_angular_acceleration>
+      <min_velocity>-2.0</min_velocity>
+      <max_velocity>2.0</max_velocity>
+      <min_angular_velocity>-3.0</min_angular_velocity>
+      <max_angular_velocity>3.0</max_angular_velocity>
+      <odom_publish_frequency>50</odom_publish_frequency>
+      <use_velocity_commands>true</use_velocity_commands>
+    </plugin> -->
+
+    <!-- <plugin filename="libgz-sim-joint-state-publisher-system.so" name="gz::sim::systems::JointStatePublisher">
+      <joint_name>pan_gimbal_joint</joint_name>
+      <joint_name>tilt_gimbal_joint</joint_name>
+      <joint_name>front_left_wheel_joint</joint_name>
+      <joint_name>front_right_wheel_joint</joint_name>
+      <joint_name>rear_left_wheel_joint</joint_name>
+      <joint_name>rear_right_wheel_joint</joint_name>
+      <joint_name>panda_joint1</joint_name>
+      <joint_name>panda_joint2</joint_name>
+      <joint_name>panda_joint3</joint_name>
+      <joint_name>panda_joint4</joint_name>
+      <joint_name>panda_joint5</joint_name>
+      <joint_name>panda_joint6</joint_name>
+      <joint_name>panda_joint7</joint_name>
+      <joint_name>panda_finger_joint1</joint_name>
+      <joint_name>panda_finger_joint2</joint_name>
+    </plugin> -->
+
+    <!-- =========================================================
+         MOUNT: FIXED JOINT (Husky base_link -> Panda base)
+         ========================================================= -->
+    <joint name="husky_to_panda" type="fixed">
+      <parent>base_link</parent>
+      <child>panda_link0</child>
+      <!-- Mount the Panda on top plate at z = 0.2325 (no rotation) -->
+      <pose>0 0 0.2325 0 0 0</pose>
+    </joint>
+
+    <plugin filename="libgz_ros2_control-system.so" name="gz_ros2_control::GazeboSimROS2ControlPlugin">
+          
+      <parameters>/home/rebellion/mobile_robotics/gz_start/robot_models/panda_arm_model/colcon_ws/src/husky_panda_description/config/ros2_controllers.yaml</parameters>
+    </plugin> 
+
+    <ros2_control name="GazeboSystem" type="system">
+      <hardware>
+        <plugin>gz_ros2_control/GazeboSystem</plugin>
+      </hardware>
+
+        <!-- Husky diff drive joints -->
+        <joint name="front_left_wheel_joint">
+          <command_interfaces><velocity/></command_interfaces>
+          <state_interfaces><position/><velocity/></state_interfaces>
+        </joint>
+        <joint name="rear_left_wheel_joint">
+          <command_interfaces><velocity/></command_interfaces>
+          <state_interfaces><position/><velocity/></state_interfaces>
+        </joint>
+        <joint name="front_right_wheel_joint">
+          <command_interfaces><velocity/></command_interfaces>
+          <state_interfaces><position/><velocity/></state_interfaces>
+        </joint>
+        <joint name="rear_right_wheel_joint">
+          <command_interfaces><velocity/></command_interfaces>
+          <state_interfaces><position/><velocity/></state_interfaces>
+        </joint>
+
+        <joint name="pan_gimbal_joint">
+          <command_interface name="position"/>
+          <state_interface name="position"/>
+          <state_interface name="velocity"/>
+        </joint>
+        <joint name="tilt_gimbal_joint">
+          <command_interface name="position"/>
+          <state_interface name="position"/>
+          <state_interface name="velocity"/>
+        </joint>
+
+        <joint name="panda_joint1"><command_interface name="position"/><state_interface name="position"/><state_interface name="velocity"/></joint>
+          <joint name="panda_joint2"><command_interface name="position"/><state_interface name="position"/><state_interface name="velocity"/></joint>
+          <joint name="panda_joint3"><command_interface name="position"/><state_interface name="position"/><state_interface name="velocity"/></joint>
+          <joint name="panda_joint4"><command_interface name="position"/><state_interface name="position"/><state_interface name="velocity"/></joint>
+          <joint name="panda_joint5"><command_interface name="position"/><state_interface name="position"/><state_interface name="velocity"/></joint>
+          <joint name="panda_joint6"><command_interface name="position"/><state_interface name="position"/><state_interface name="velocity"/></joint>
+          <joint name="panda_joint7"><command_interface name="position"/><state_interface name="position"/><state_interface name="velocity"/></joint>
+
+          <!-- Gripper: ONLY joint1 is commanded; joint2 (mimic) is state-only -->
+          <joint name="panda_finger_joint1">
+              <command_interface name="position"/>
+              <state_interface name="position"/>
+              <state_interface name="velocity"/>
+          </joint>
+          <joint name="panda_finger_joint2">
+              <mimic joint="panda_finger_joint1" multiplier="1.0"/>
+              <state_interface name="position"/>
+              <state_interface name="velocity"/>
+          </joint>
+      </ros2_control>
+
   </model>
 </sdf>

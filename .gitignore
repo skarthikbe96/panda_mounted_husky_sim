@@ -1,0 +1,27 @@
+# --- Archives ---
+*.zip
+*.tar
+*.tar.gz
+*.tgz
+*.tar.bz2
+*.tbz
+*.tbz2
+*.tar.xz
+*.txz
+*.7z
+*.rar
+
+# --- Other compressed blobs ---
+*.gz
+*.bz2
+*.xz
+*.zst
+*.lz
+*.lzma
+
+# --- Optional: Java/Android package archives ---
+*.jar
+*.war
+*.ear
+*.apk
+*.zip

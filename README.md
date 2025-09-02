@@ -30,6 +30,10 @@ End-to-end setup for simulating and operating a Clearpath **Husky** base with a 
 ## 🧱 Build
 
 ```bash
+
+rosdep install --from-paths src --rosdistro jazzy --ignore-src -r -y
+
+
 # From your colcon workspace root
 colcon build --symlink-install
 source install/setup.bash
@@ -54,23 +58,28 @@ ros2 run xacro xacro panda_mounted_husky.urdf.xacro -o panda_mount_husky.urdf
 ### 3) Keyboard Teleop
 ```bash
 ros2 run teleop_twist_keyboard teleop_twist_keyboard
+
+latest:
+
+ros2 run teleop_twist_keyboard teleop_twist_keyboard \
+  --ros-args -p stamped:=true \
+  -r /cmd_vel:=/husky_velocity_controller/cmd_vel
+
 ```
 
-### 4) SLAM (Online, Async)
+### 4) SLAMTool Box (Online, Async)
 Example A (IVC workspace):
 ```bash
-ros2 launch slam_toolbox online_async_launch.py   slam_params_file:=/home/rebellion/mobile_robotics/industrial_vaccum_robot/ivc_robot_ws/src/husky_nav2_slam/config/mapper_params_online_async.yaml   use_sim_time:=true
+ros2 launch slam_toolbox online_async_launch.py slam_params_file:=/home/rebellion/mobile_robotics/gz_start/robot_models/panda_arm_model/colcon_ws/src/husky_nav2_slam/config/slamtoolbox_params_online_async.yaml  use_sim_time:=true
 ```
 
-Example B (gz_start workspace):
-```bash
-ros2 launch slam_toolbox online_async_launch.py   slam_params_file:=/home/rebellion/mobile_robotics/gz_start/robot_models/panda_arm_model/colcon_ws/src/husky_nav2_slam/config/slamtoolbox_params_online_async.yaml   use_sim_time:=true
-```
 
 ### 5) Nav2 (Navigation)
 Basic bringup:
 ```bash
 ros2 launch nav2_bringup navigation_launch.py use_sim_time:=true params_file:=/home/rebellion/mobile_robotics/gz_start/robot_models/panda_arm_model/colcon_ws/src/husky_nav2_slam/config/nav2_params.yaml
+
+
 ```
 
 With a saved map + custom params:
@@ -95,6 +104,25 @@ ros2 service call /slam_toolbox/serialize_map slam_toolbox/srv/SerializePoseGrap
 > Use the resulting files with your later Nav2 sessions (see bringup with `map:=...` above).
 
 ---
+
+## Validating Xacro
+```bash
+ros2 run  xacro xacro /home/rebellion/mobile_robotics/gz_start/robot_models/panda_arm_model/colcon_ws/src/husky_panda_description/husky_panda_model/panda_mounted_husky/panda_model_description/panda.urdf.xacro > /tmp/panda_merged.urdf
+
+check_urdf /tmp/panda_merged.urdf
+```
+
+## Validating SDF
+```bash
+gz sdf -k /home/rebellion/mobile_robotics/gz_start/robot_models/panda_arm_model/colcon_ws/src/husky_panda_description/husky_panda_model/husky_small_house_world.sdf
+```
+## Validating yaml file
+```bash
+ros2 run demo_nodes_cpp parameter_blackboard __node:=dummy
+
+ros2 param load /dummy /home/rebellion/mobile_robotics/gz_start/robot_models/panda_arm_model/colcon_ws/src/husky_panda_description/config/ompl_planning.yaml
+
+```
 
 ## 📐 Platform Specs
 
@@ -193,13 +221,12 @@ ros2 service call /slam_toolbox/serialize_map slam_toolbox/srv/SerializePoseGrap
 
 ## 🔧 Config Files (examples)
 
-- **SLAM (mapper):**  
-  - `/src/husky_nav2_slam/config/mapper_params_online_async.yaml`  
-  - `/src/husky_nav2_slam/config/slamtoolbox_params_online_async.yaml`
+- **SLAMTOOL BOX (mapper):**  
+  - `/husky_nav2_slam/config/slamtoolbox_params_online_async.yaml`
 - **Nav2 params:**  
-  - `/src/husky_nav2_slam/config/nav2_params.yaml`
+  - `/husky_nav2_slam/config/nav2_params.yaml`
 - **Maps:**  
-  - `/src/husky_nav2_slam/map/map_v3/map_v3.yaml`
+  - `/husky_nav2_slam/map/map_v3/map_v3.yaml`
 
 > Tune these to your robot namespace, frame ids, and topic names.
 

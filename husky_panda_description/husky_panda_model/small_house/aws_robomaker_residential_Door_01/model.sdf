@@ -1,14 +1,14 @@
-<?xml version="1.0" ?>
+<?xml version='1.0' encoding='utf-8'?>
 <sdf version="1.6">
   <model name="aws_robomaker_residential_Door_01">
     <link name="link">
       <inertial>
-        <mass>1</mass>
-      </inertial>
+        <mass>24.000000</mass>
+      <inertia><ixx>8.003200</ixx><iyy>9.620000</iyy><izz>1.623200</izz><ixy>0.0</ixy><ixz>0.0</ixz><iyz>0.0</iyz></inertia></inertial>
       <collision name="collision">
         <geometry>
           <mesh>
-            <uri>model://aws_robomaker_residential_Door_01/meshes/aws_Door_01_collision.DAE</uri>
+            <uri>meshes/aws_Door_01_collision.DAE</uri>
             <scale>1 1 1</scale>
           </mesh>
         </geometry>
@@ -16,7 +16,7 @@
       <visual name="visual">
 	    <geometry>
           <mesh>
-            <uri>model://aws_robomaker_residential_Door_01/meshes/aws_Door_01_visual.DAE</uri>
+            <uri>meshes/aws_Door_01_visual.DAE</uri>
           </mesh>
         </geometry>
       <meta> <layer> 2 </layer></meta>

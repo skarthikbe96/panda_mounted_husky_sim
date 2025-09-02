@@ -21,7 +21,7 @@ slam_toolbox:
     mode: localization
     # mode: mapping
 
-    map_file_name: /home/rebellion/mobile_robotics/gz_start/robot_models/panda_arm_model/colcon_ws/src/husky_nav2_slam/map/map_v3/map_v3
+    map_file_name: /home/rebellion/mobile_robotics/gz_start/robot_models/panda_arm_model/colcon_ws/src/husky_nav2_slam/map/map_house/map
     map_start_pose: [0.0, 0.0, 0.0]
     #map_start_at_dock: true
 

@@ -200,11 +200,11 @@
     </include>
 
 
-    <include>
+    <!-- <include>
       <uri>model://panda_mounted_husky</uri>
       <name>panda_mounted_husky</name>
       <pose>0 0 0.2 0 0 0</pose>
-    </include>
+    </include> -->
 
   </world>
 
