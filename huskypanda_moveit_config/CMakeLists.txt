@@ -26,6 +26,11 @@ ament_target_dependencies(moveit_process rclcpp moveit_ros_planning_interface)
 install(TARGETS moveit_process
   DESTINATION lib/${PROJECT_NAME})
 
+install(PROGRAMS
+  scripts/panda_arm_controller.py
+  DESTINATION lib/${PROJECT_NAME}
+)
+
 # Install launch files (do NOT install src/)
 install(DIRECTORY config launch rviz srdf
   DESTINATION share/${PROJECT_NAME})

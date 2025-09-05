@@ -10,6 +10,7 @@ from launch.actions import (
     DeclareLaunchArgument,
     ExecuteProcess,
     SetEnvironmentVariable,
+    IncludeLaunchDescription
 )
 from launch.substitutions import (
     LaunchConfiguration,
@@ -21,6 +22,7 @@ from launch_ros.actions import Node
 from launch_ros.substitutions import FindPackageShare
 from launch_ros.parameter_descriptions import ParameterValue
 from launch.actions import TimerAction
+from launch.launch_description_sources import PythonLaunchDescriptionSource
 
 
 def generate_launch_description() -> LaunchDescription:
@@ -40,15 +42,34 @@ def generate_launch_description() -> LaunchDescription:
     # Gazebo resource path
     model_search = SetEnvironmentVariable(
         name="GZ_SIM_RESOURCE_PATH",
-        value=f"{pkg_husky_panda}/husky_panda_model:{pkg_husky_panda}/husky_panda_model/panda_mounted_husky:{pkg_husky_panda}/husky_panda_model/panda_mounted_husky/meshes"
+        value=":".join([
+            f"{pkg_husky_panda}/husky_panda_model",
+            f"{pkg_husky_panda}/husky_panda_model/panda_mounted_husky",
+            f"{pkg_husky_panda}/husky_panda_model/panda_mounted_husky/meshes",
+            f"{pkg_husky_panda}/world/small_house",
+            f"{pkg_husky_panda}/world/warehouse",
+            f"{pkg_husky_panda}/world/bookstore",
+        ])
     )
 
-    # Gazebo simulation
+    #  Gazebo simulation
     gazebo = ExecuteProcess(
         cmd=["gz", "sim", "-v", "3", world],
         output="screen",
         cwd=pkg_husky_panda,
     )
+
+    # gazebo = IncludeLaunchDescription(
+    #         PythonLaunchDescriptionSource([os.path.join(
+    #             get_package_share_directory('ros_gz_sim'), 'launch'), '/gz_sim.launch.py']),
+    #         launch_arguments=[
+    #             ('gz_args', [world,
+    #                             ' -v 4',
+    #                             ' -r',
+    #                             ' --physics-engine gz-physics-bullet-featherstone-plugin']
+    #             )
+    #         ]
+    #         )
 
     # Spawn robot into Gazebo (SDF only)
     spawn_entity = Node(
@@ -59,6 +80,8 @@ def generate_launch_description() -> LaunchDescription:
             "-file", os.path.join(pkg_husky_panda, "husky_panda_model", "panda_mounted_husky","model.sdf"),
             # "-name", "husky_panda",
             "-x", "0.0", "-y", "0.0", "-z", "0.5",
+            '-name', 'panda_mounted_husky',
+                   '-allow_renaming', 'false'
         ],
     )
 
@@ -127,9 +150,10 @@ def generate_launch_description() -> LaunchDescription:
         }],
     )
 
+    # Controller spawners
     controllers = [
         ExecuteProcess(
-            cmd=["ros2 run controller_manager spawner {}".format(ctrl)],
+            cmd=[f"ros2 run controller_manager spawner {ctrl}"],
             shell=True,
             output="screen",
         )
@@ -142,23 +166,25 @@ def generate_launch_description() -> LaunchDescription:
         ]
     ]
 
-    # Delay controller spawning by 5 seconds
+    # Delay controller spawning by 10 seconds so Gazebo + robot are ready
     delayed_controllers = TimerAction(
         period=10.0,
         actions=controllers,
     )
 
+    # NOTE: TF frame ids must not contain slashes. Use plain names.
     tf_base_husky_base = Node(
-        package='tf2_ros',
-        executable='static_transform_publisher',
-        name='tf_base_to_gz_base',
+        package="tf2_ros",
+        executable="static_transform_publisher",
+        name="tf_base_to_gz_base",
         arguments=[
             "--x", "0", "--y", "0", "--z", "0",
             "--roll", "0", "--pitch", "0", "--yaw", "0",
             "--frame-id", "base_link",
             "--child-frame-id", "panda_mounted_husky/base_link",
-                ],
-        output='screen'
+        ],
+        output="screen",
+        parameters=[{"use_sim_time": use_sim_time}],
     )
 
     tf_gz_base_planar = Node(
@@ -172,19 +198,21 @@ def generate_launch_description() -> LaunchDescription:
             "--child-frame-id", "panda_mounted_husky/base_link/planar_laser",
         ],
         output="screen",
+        parameters=[{"use_sim_time": use_sim_time}],
     )
 
-    tf_gz_base_front_laser = Node(
-        package="tf2_ros",
-        executable="static_transform_publisher",
-        name="tf_gz_base_to_front_laser",
-        arguments=[
-            "--x", "0.424", "--y", "0.0", "--z", "0.387",
-            "--roll", "0", "--pitch", "0", "--yaw", "0",
-            "--frame-id", "panda_mounted_husky/base_link",
-            "--child-frame-id", "panda_mounted_husky/base_link/front_laser",
-        ],
-        output="screen",
+    tf_gz_base_front_laser = Node( 
+        package="tf2_ros", 
+        executable="static_transform_publisher", 
+        name="tf_gz_base_to_front_laser", 
+        arguments=[ 
+        "--x", "0.424", "--y", "0.0", "--z", "0.387", 
+        "--roll", "0", "--pitch", "0", "--yaw", "0", 
+        "--frame-id", "panda_mounted_husky/base_link", 
+        "--child-frame-id", "panda_mounted_husky/base_link/front_laser", 
+        ], 
+        output="screen", 
+        parameters=[{"use_sim_time": use_sim_time}],
     )
 
     tf_gz_base_imu = Node(
@@ -198,8 +226,35 @@ def generate_launch_description() -> LaunchDescription:
             "--child-frame-id", "panda_mounted_husky/base_link/imu_sensor",
         ],
         output="screen",
+        parameters=[{"use_sim_time": use_sim_time}],
     )
 
+    tf_imu_to_front_laser = Node(
+        package="tf2_ros",
+        executable="static_transform_publisher",
+        name="tf_imu_to_front_laser",
+        arguments=[
+            "--x", "0.424", "--y", "0.0", "--z", "0.387",
+            "--roll", "0", "--pitch", "0", "--yaw", "0",
+            "--frame-id", "panda_mounted_husky/base_link/imu_sensor",
+            "--child-frame-id", "panda_mounted_husky/base_link/front_laser",
+        ],
+        output="screen",
+        parameters=[{"use_sim_time": use_sim_time}],
+    )
+
+    twist_bridge = Node(
+        package="husky_panda_description",
+        executable="twist_to_stamped.py",
+        name="twist_to_stamped_bridge",
+        output="screen",
+        parameters=[{
+            "in_topic": "/cmd_vel",
+            "out_topic": "/husky_velocity_controller/cmd_vel",
+            "frame_id": "",           # or "base_link" if your controller expects it
+            "use_sim_time": True,
+        }],
+    )
 
     ekf_node = Node(
         package="robot_localization",
@@ -208,24 +263,45 @@ def generate_launch_description() -> LaunchDescription:
         output="screen",
         parameters=[
             {"use_sim_time": use_sim_time},
-            LaunchConfiguration("ekf_yaml")
+            LaunchConfiguration("ekf_yaml"),
         ],
-        # remappings=[("/odometry/filtered", "/odom")]
+        # remappings=[("/odometry/filtered", "/odom")],
+    )
+
+    # Start all the non-Gazebo nodes after /clock is publishing
+    rest = [
+
+        rviz,
+        bridge,
+        ekf_node,
+        delayed_controllers,
+        tf_base_husky_base,
+        twist_bridge,
+        tf_gz_base_planar,
+        tf_imu_to_front_laser,
+        tf_gz_base_imu,
+    ]
+
+    delayed_nodes = TimerAction(
+        period=2.0,
+        actions=rest,
     )
 
     actions = [
         SetEnvironmentVariable(
-            name='HUSKY_PANDA_DESCRIPTION_DIR',
-            value=FindPackageShare('husky_panda_description')
+            name="HUSKY_PANDA_DESCRIPTION_DIR",
+            value=FindPackageShare("husky_panda_description"),
         ),
-        *declared_arguments,  # works whether this is a list or tuple
-        model_search, gazebo, spawn_entity, robot_state_pub, rviz, bridge,
-        ekf_node, delayed_controllers, tf_base_husky_base, twist_bridge,
-        tf_gz_base_planar, tf_gz_base_front_laser, tf_gz_base_imu,
+        *declared_arguments,
+        model_search,
+        gazebo,
+        spawn_entity,
+        robot_state_pub,
+        delayed_nodes,
     ]
 
+    return LaunchDescription(actions)
 
-    return LaunchDescription(actions)    
 
 
 def generate_declared_arguments() -> List[DeclareLaunchArgument]:
@@ -235,7 +311,8 @@ def generate_declared_arguments() -> List[DeclareLaunchArgument]:
     return [
         DeclareLaunchArgument(
             "world",
-            default_value=os.path.join(pkg_husky_panda, "husky_panda_model", "husky_small_house_world.sdf"),
+            # default_value=os.path.join(pkg_husky_panda, "world","bookstore", "husky_bookstore_world.sdf"),
+            default_value=os.path.join(pkg_husky_panda, "world","small_house", "husky_small_house_world.sdf"),
             description="World file to load in Gazebo.",
         ),
         DeclareLaunchArgument(

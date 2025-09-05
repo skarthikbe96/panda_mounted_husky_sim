@@ -84,12 +84,12 @@ ros2 launch nav2_bringup navigation_launch.py use_sim_time:=true params_file:=/h
 
 With a saved map + custom params:
 ```bash
-ros2 launch nav2_bringup bringup_launch.py   use_sim_time:=true   map:=/home/rebellion/mobile_robotics/gz_start/robot_models/panda_arm_model/colcon_ws/src/husky_nav2_slam/map/map_v3/map_v3.yaml   params_file:=/home/rebellion/mobile_robotics/gz_start/robot_models/panda_arm_model/colcon_ws/src/husky_nav2_slam/config/nav2_params.yaml
+ros2 launch nav2_bringup bringup_launch.py   use_sim_time:=true   map:=$(ros2 pkg prefix husky_nav2_slam)/map/map_v3/map_v3.yaml   params_file:=$(ros2 pkg prefix husky_nav2_slam)/config/nav2_params.yaml
 ```
 
 ### 6) (Optional) Utility Script
 ```bash
-./python.sh /home/rebellion/mobile_robotics/gz_start/robot_models/panda_arm_model/colcon_ws/src/husky_panda_description/scripts/husky_isaac.py
+./python.sh $(ros2 pkg prefix husky_panda_description)/scripts/husky_isaac.py
 ```
 
 ---
@@ -98,7 +98,7 @@ ros2 launch nav2_bringup bringup_launch.py   use_sim_time:=true   map:=/home/reb
 
 Serialize slam_toolbox’s pose graph to disk:
 ```bash
-ros2 service call /slam_toolbox/serialize_map slam_toolbox/srv/SerializePoseGraph "{filename: '/home/rebellion/mobile_robotics/gz_start/robot_models/panda_arm_model/colcon_ws/src/husky_nav2_slam/map'}"
+ros2 service call /slam_toolbox/serialize_map slam_toolbox/srv/SerializePoseGraph "{filename: '$(ros2 pkg prefix husky_nav2_slam)/map'}"
 ```
 
 > Use the resulting files with your later Nav2 sessions (see bringup with `map:=...` above).
@@ -107,20 +107,20 @@ ros2 service call /slam_toolbox/serialize_map slam_toolbox/srv/SerializePoseGrap
 
 ## Validating Xacro
 ```bash
-ros2 run  xacro xacro /home/rebellion/mobile_robotics/gz_start/robot_models/panda_arm_model/colcon_ws/src/husky_panda_description/husky_panda_model/panda_mounted_husky/panda_model_description/panda.urdf.xacro > /tmp/panda_merged.urdf
+ros2 run  xacro xacro $(ros2 pkg prefix husky_panda_description)/husky_panda_model/panda_mounted_husky/panda_model_description/panda.urdf.xacro > /tmp/panda_merged.urdf
 
 check_urdf /tmp/panda_merged.urdf
 ```
 
 ## Validating SDF
 ```bash
-gz sdf -k /home/rebellion/mobile_robotics/gz_start/robot_models/panda_arm_model/colcon_ws/src/husky_panda_description/husky_panda_model/husky_small_house_world.sdf
+gz sdf -k $(ros2 pkg prefix husky_panda_description)/husky_panda_model/husky_small_house_world.sdf
 ```
 ## Validating yaml file
 ```bash
 ros2 run demo_nodes_cpp parameter_blackboard __node:=dummy
 
-ros2 param load /dummy /home/rebellion/mobile_robotics/gz_start/robot_models/panda_arm_model/colcon_ws/src/husky_panda_description/config/ompl_planning.yaml
+ros2 param load /dummy $(ros2 pkg prefix husky_panda_description)/config/ompl_planning.yaml
 
 ```
 
@@ -132,6 +132,16 @@ ros2 control list_controllers
 ros2 param get /controller_manager ros__parameters
 
 ros2 control list_hardware_interfaces
+```
+
+## sgraph commands
+```bash
+ros2 launch lidar_situational_graphs s_graphs_launch.py \
+  compute_odom:=true \
+  lidar_topic:=/front_laser/points \
+  base_frame:=panda_mounted_husky/base_link \
+  odom_frame:=odom \
+  map_frame:=map
 ```
 
 ## 📐 Platform Specs

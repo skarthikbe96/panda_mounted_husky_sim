@@ -24,7 +24,7 @@ install(PROGRAMS
   DESTINATION lib/${PROJECT_NAME}
 )
 
-install(DIRECTORY config launch rviz husky_panda_model 
+install(DIRECTORY config launch rviz world/ husky_panda_model/ 
   DESTINATION share/${PROJECT_NAME})
 
 if(BUILD_TESTING)

@@ -1,0 +1,23 @@
+# moveit_cpp.yaml
+planning_pipelines:
+  pipeline_names: [ompl]
+
+plan_request_params:
+  planning_attempts: 1
+  planning_pipeline: ompl
+  max_velocity_scaling_factor: 0.2
+  max_acceleration_scaling_factor: 0.2
+
+ompl:
+  # <<< IMPORTANT: plural + list >>>
+  planning_plugins: [ompl_interface/OMPLPlanner]
+  request_adapters:
+    - default_planning_request_adapters/ResolveConstraintFrames
+    - default_planning_request_adapters/ValidateWorkspaceBounds
+    - default_planning_request_adapters/CheckStartStateBounds
+    - default_planning_request_adapters/CheckStartStateCollision
+  response_adapters:
+    - default_planning_response_adapters/AddTimeOptimalParameterization
+    - default_planning_response_adapters/ValidateSolution
+    - default_planning_response_adapters/DisplayMotionPath
+  start_state_max_bounds_error: 0.1
