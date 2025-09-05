@@ -271,7 +271,7 @@ def generate_launch_description() -> LaunchDescription:
     # Start all the non-Gazebo nodes after /clock is publishing
     rest = [
 
-        rviz,
+        # rviz,
         bridge,
         ekf_node,
         delayed_controllers,

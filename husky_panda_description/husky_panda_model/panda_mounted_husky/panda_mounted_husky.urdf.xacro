@@ -13,11 +13,11 @@
           LINKS
           ========================= -->
 
-      <link name="world_link"/>
+      <!-- <link name="world_link"/>
       <joint name="world_to_base" type="fixed">
         <parent link="world_link"/>
         <child link="base_link"/>
-      </joint>
+      </joint> -->
       <!-- base_link -->
 
 
@@ -860,11 +860,11 @@
                iyy="6.6271892216413953e-05" iyz="1.19675484743908e-05" izz="1.550396267804825e-05"/></inertial>
   </link>
   <joint name="panda_finger_joint1" type="prismatic">
-    <parent link="panda_link7"/><child link="panda_leftfinger"/>
+    <parent link="panda_link7"/>
+    <child  link="panda_leftfinger"/>
     <origin xyz="0 0 0.1654" rpy="0 0 -0.7853981633974483"/>
     <axis xyz="0 1 0"/>
-    <limit lower="-2.897246558310587" upper="2.897246558310587" effort="12" velocity="3.141592653589793"/>
-    <dynamics damping="3.0" friction="0.4"/>
+    <limit lower="0.0" upper="0.04" effort="20" velocity="0.2"/>
   </joint>
 
   <link name="panda_rightfinger">
@@ -877,11 +877,20 @@
                iyy="6.6271892216413953e-05" iyz="1.19675484743908e-05" izz="1.550396267804825e-05"/></inertial>
   </link>
   <joint name="panda_finger_joint2" type="prismatic">
-    <parent link="panda_link7"/><child link="panda_rightfinger"/>
+    <parent link="panda_link7"/>
+    <child  link="panda_rightfinger"/>
     <origin xyz="0 0 0.1654" rpy="0 0 -0.7853981633974483"/>
     <axis xyz="0 -1 0"/>
     <limit lower="0.0" upper="0.04" effort="20" velocity="0.2"/>
-    <dynamics damping="3.0" friction="0.4"/>
+    <mimic joint="panda_finger_joint1" multiplier="1.0" offset="0.0"/>
+  </joint>
+
+
+  <link name="panda_hand_tcp"/>
+  <joint name="panda_hand_tcp_joint" type="fixed">
+    <parent link="gripper_mount"/>  <!-- or panda_link7 -->
+    <child  link="panda_hand_tcp"/>
+    <origin xyz="0 0 0.16" rpy="0 0 0"/>  <!-- tune to your gripper geometry -->
   </joint>
 
 

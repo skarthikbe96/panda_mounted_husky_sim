@@ -57,7 +57,7 @@ def generate_launch_description():
             "response_adapters": ["default_planning_response_adapters/AddTimeOptimalParameterization",
                              "default_planning_response_adapters/ValidateSolution",
                              "default_planning_response_adapters/DisplayMotionPath"],
-            "start_state_max_bounds_error": 0.1
+            "start_state_max_bounds_error": 0.001
         },
         "octomap_frame": "base_link",
         "octomap_resolution": 0.05,
